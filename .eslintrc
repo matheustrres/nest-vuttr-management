@@ -1,0 +1,71 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "eslint-plugin-import-helpers"
+  ],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "root": true,
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "ignorePatterns": [
+    ".eslintrc.js"
+  ],
+  "rules": {
+    "getter-return": "error",
+    "no-async-promise-executor": "error",
+    "no-await-in-loop": "warn",
+    "no-dupe-args": "error",
+    "no-dupe-class-members": "error",
+    "no-duplicate-imports": "warn",
+    "no-extra-semi": "warn",
+    "no-mixed-spaces-and-tabs": "off",
+    "no-tabs": "off",
+    "space-before-function-paren": [
+      "warn",
+      {
+        "anonymous": "never",
+        "named": "always",
+        "asyncArrow": "always"
+      }
+    ],
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          "/^node/",
+          "module",
+          "/^(.|..)\//",
+          [
+            "sibling"
+          ]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": false
+        }
+      }
+    ],
+    "accessor-pairs": [
+      "warn",
+      {
+        "getWithoutSet": true
+      }
+    ],
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "typescript-eslint/return-await": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-confusing-void-expression": "off"
+  }
+}
