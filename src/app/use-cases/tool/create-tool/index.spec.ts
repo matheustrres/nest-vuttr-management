@@ -27,13 +27,16 @@ describe('CreateTool [use case]', (): void => {
 					title: 'json-server',
 				}),
 			)
+			.mockResolvedValueOnce(undefined)
 			.mockResolvedValueOnce(undefined);
 
-		toolRepository.findByLink.mockResolvedValueOnce(
-			makeTool({
-				link: 'https://www.fastify.io/',
-			}),
-		);
+		toolRepository.findByLink
+			.mockResolvedValueOnce(
+				makeTool({
+					link: 'https://www.fastify.io/',
+				}),
+			)
+			.mockResolvedValueOnce(undefined);
 	});
 
 	beforeEach((): void => {
@@ -79,5 +82,31 @@ describe('CreateTool [use case]', (): void => {
 		expect(toolRepository.findByTitle).toHaveBeenCalledTimes(2);
 		expect(toolRepository.findByLink).toHaveBeenCalledTimes(1);
 		expect(toolRepository.findByLink).toHaveBeenCalledWith(link);
+	});
+
+	it('should create a tool', async (): Promise<void> => {
+		const { tool } = await sut.exec({
+			title: 'Notion',
+			link: 'https://notion.so',
+			description:
+				'All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ',
+			tags: [
+				'organization',
+				'planning',
+				'collaboration',
+				'writing',
+				'calendar',
+			],
+		});
+
+		expect(toolRepository.create).toHaveBeenCalledTimes(1);
+		expect(toolRepository.create).toHaveBeenCalledWith(tool);
+
+		expect(tool).toBeDefined();
+		expect(tool.id).toBeDefined();
+		expect(tool.createdAt).toBeDefined();
+		expect(tool.title).toBe('Notion');
+		expect(tool.link).toBe('https://notion.so');
+		expect(tool.tags.length).toBe(5);
 	});
 });
