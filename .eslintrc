@@ -21,6 +21,12 @@
     ".eslintrc.js"
   ],
   "rules": {
+    "prettier/prettier": [
+      "warn",
+      {
+        "tabWidth": 2
+      }
+    ],
     "getter-return": "error",
     "no-async-promise-executor": "error",
     "no-await-in-loop": "warn",
@@ -45,6 +51,9 @@
         "groups": [
           "/^node/",
           "module",
+          "/^@app/",
+          "/^@data/",
+          "/^@domain/",
           "/^(.|..)\//",
           [
             "sibling"
