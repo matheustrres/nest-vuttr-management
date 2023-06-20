@@ -11,6 +11,7 @@ const config: Config = {
 	coverageDirectory: '../coverage',
 	testEnvironment: 'node',
 	moduleNameMapper: {
+		'@tests/(.+)': '<rootDir>/tests/$1',
 		'@app/(.+)': '<rootDir>/src/app/$1',
 		'@data/(.+)': '<rootDir>/src/data/$1',
 		'@domain/(.+)': '<rootDir>/src/domain/$1',

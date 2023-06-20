@@ -22,9 +22,13 @@
       "@domain/*": [
         "./domain/*",
       ],
+      "@tests/*": [
+        "../tests/*"
+      ]
     },
     "rootDirs": [
       "./",
+      "../tests/"
     ],
     "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": false,
