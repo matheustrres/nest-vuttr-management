@@ -21,9 +21,17 @@ describe('CreateTool [use case]', (): void => {
 	beforeAll((): void => {
 		toolRepository = mock();
 
-		toolRepository.findByTitle.mockResolvedValueOnce(
+		toolRepository.findByTitle
+			.mockResolvedValueOnce(
+				makeTool({
+					title: 'json-server',
+				}),
+			)
+			.mockResolvedValueOnce(undefined);
+
+		toolRepository.findByLink.mockResolvedValueOnce(
 			makeTool({
-				title: 'json-server',
+				link: 'https://www.fastify.io/',
 			}),
 		);
 	});
@@ -33,16 +41,34 @@ describe('CreateTool [use case]', (): void => {
 	});
 
 	it('should throw when creating a tool with an already registered title', (): void => {
+		const title = 'json-server';
+
 		expect(
 			sut.exec({
-				title: 'json-server',
+				title,
 				link: 'https://github.com/typicode/json-server',
 				description:
 					'Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.',
 				tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
 			}),
 		).rejects.toThrow(
-			new ToolFoundError('Tool already exists with title "json-server".'),
+			new ToolFoundError(`Tool already exists with title "${title}".`),
+		);
+	});
+
+	it('should throw when creating a tool with an already registered link', (): void => {
+		const link = 'https://www.fastify.io/';
+
+		expect(
+			sut.exec({
+				title: 'fastify',
+				link,
+				description:
+					'Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.',
+				tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
+			}),
+		).rejects.toThrow(
+			new ToolFoundError(`Tool already exists with link "${link}".`),
 		);
 	});
 });
