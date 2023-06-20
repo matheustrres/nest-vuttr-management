@@ -40,35 +40,44 @@ describe('CreateTool [use case]', (): void => {
 		sut = new CreateToolUseCase(toolRepository);
 	});
 
-	it('should throw when creating a tool with an already registered title', (): void => {
+	it('should throw when creating a tool with an already registered title', async (): Promise<void> => {
 		const title = 'json-server';
 
-		expect(
-			sut.exec({
-				title,
-				link: 'https://github.com/typicode/json-server',
-				description:
-					'Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.',
-				tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
-			}),
-		).rejects.toThrow(
+		const promise = sut.exec({
+			title,
+			link: 'https://github.com/typicode/json-server',
+			description:
+				'Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.',
+			tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
+		});
+
+		await expect(promise).rejects.toThrow(
 			new ToolFoundError(`Tool already exists with title "${title}".`),
 		);
+
+		expect(toolRepository.findByTitle).toHaveBeenCalledTimes(1);
+		expect(toolRepository.findByTitle).toHaveBeenCalledWith(title);
+		expect(toolRepository.findByLink).toBeCalledTimes(0);
 	});
 
-	it('should throw when creating a tool with an already registered link', (): void => {
+	it('should throw when creating a tool with an already registered link', async (): Promise<void> => {
 		const link = 'https://www.fastify.io/';
 
-		expect(
-			sut.exec({
-				title: 'fastify',
-				link,
-				description:
-					'Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.',
-				tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
-			}),
-		).rejects.toThrow(
+		const promise = sut.exec({
+			title: 'fastify',
+			link,
+			description:
+				'Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.',
+			tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
+		});
+
+		await expect(promise).rejects.toThrow(
 			new ToolFoundError(`Tool already exists with link "${link}".`),
 		);
+
+		expect(toolRepository.findByTitle).toHaveBeenCalledWith('fastify');
+		expect(toolRepository.findByTitle).toHaveBeenCalledTimes(2);
+		expect(toolRepository.findByLink).toHaveBeenCalledTimes(1);
+		expect(toolRepository.findByLink).toHaveBeenCalledWith(link);
 	});
 });
