@@ -10,7 +10,7 @@ import {
 	ICreateToolRequest,
 	ICreateToolResponse,
 	ICreateToolUseCase,
-} from '@domain/use-cases/tool/create-tool.use.case';
+} from '@domain/use-cases/tool/create-tool.use-case';
 
 type ToolRepository = CreateToolRepository &
 	FindToolByLinkRepository &
