@@ -1,5 +1,9 @@
 import { Tool } from '@domain/entities/tool.entity';
 
+type ListToolsRepositoryInput = {
+	tag?: string | null;
+};
+
 export interface ListToolsRepository {
-	listTools: () => Promise<Tool[]>;
+	listTools: (input?: ListToolsRepositoryInput) => Promise<Tool[]>;
 }
