@@ -23,13 +23,15 @@ describe('DeleteTool [use case]', (): void => {
 		sut = new DeleteToolUseCase(toolRepository);
 	});
 
-	it('should throw when trying to delete a non-existing tool with an id', (): void => {
-		expect(
-			sut.exec({
-				id: 'fake_tool_id',
-			}),
-		).rejects.toThrow(
+	it('should throw when trying to delete a non-existing tool with an id', async (): Promise<void> => {
+		const promise = sut.exec({
+			id: 'fake_tool_id',
+		});
+
+		await expect(promise).rejects.toThrow(
 			new ToolNotFoundError('No tool were found with id "fake_tool_id".'),
 		);
+
+		expect(toolRepository.findById).toHaveBeenNthCalledWith(1, 'fake_tool_id');
 	});
 });
