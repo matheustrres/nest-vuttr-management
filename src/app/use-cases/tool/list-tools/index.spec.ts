@@ -24,10 +24,12 @@ describe('ListTools [use case]', (): void => {
 			makeTool({
 				title: 'fastify',
 				link: 'https://www.fastify.io/',
+				tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
 			}),
 			makeTool({
 				title: 'json-server',
 				link: 'https://github.com/typicode/json-server',
+				tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
 			}),
 		);
 
@@ -37,7 +39,8 @@ describe('ListTools [use case]', (): void => {
 	beforeEach((): void => {
 		toolRepository.listTools
 			.mockResolvedValueOnce([])
-			.mockResolvedValueOnce(tools);
+			.mockResolvedValueOnce(tools)
+			.mockResolvedValueOnce(tools.filter((t) => t.tags.includes('node')));
 
 		sut = new ListToolsUseCase(toolRepository);
 	});
@@ -52,7 +55,7 @@ describe('ListTools [use case]', (): void => {
 		expect(toolRepository.listTools).toHaveBeenCalledTimes(1);
 	});
 
-	it('should list all tools', async (): Promise<void> => {
+	it('should list all registered tools', async (): Promise<void> => {
 		const { tools: data } = await sut.exec();
 
 		expect(toolRepository.listTools).toHaveBeenCalledTimes(2);
@@ -61,5 +64,19 @@ describe('ListTools [use case]', (): void => {
 		expect(data[0]).toEqual(tools[0]);
 		expect(data[1]).toEqual(tools[1]);
 		expect(data[2]).toEqual(tools[2]);
+	});
+
+	it('should list all registered tools with specified tag', async (): Promise<void> => {
+		const { tools: data } = await sut.exec({
+			tag: 'node',
+		});
+
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, {
+			tag: 'node',
+		});
+
+		expect(data.length).toBe(2);
+		expect(data[0]).toEqual(tools[1]);
+		expect(data[1]).toEqual(tools[2]);
 	});
 });
