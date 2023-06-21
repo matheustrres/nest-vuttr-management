@@ -9,10 +9,11 @@
     "format": "prettier --write \"{src,tests}/**/*.ts\"",
     "lint": "eslint \"{src,tests}/**/*.ts\" --fix",
     "test": "jest --passWithNoTests --no-cache --runInBand",
+    "prepare": "husky install",
+    "start:dev": "dotenv -e .env.local -- tsnd tsconfig-paths/register --inspect --transpile-only --ignore-watch 'node_modules' --respawn 'src/index.ts'",
     "test:cov": "npm test -- --coverage",
     "test:staged": "npm test -- --findRelatedTests",
-    "test:watch": "npm test -- --watch",
-    "prepare": "husky install"
+    "test:watch": "npm test -- --watch"
   },
   "devDependencies": {
     "@types/jest": "^29.5.2",
@@ -31,6 +32,7 @@
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   }
