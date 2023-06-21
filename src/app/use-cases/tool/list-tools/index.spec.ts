@@ -34,14 +34,14 @@ describe('ListTools [use case]', (): void => {
 		);
 
 		toolRepository = mock();
-	});
 
-	beforeEach((): void => {
 		toolRepository.listTools
 			.mockResolvedValueOnce([])
 			.mockResolvedValueOnce(tools)
 			.mockResolvedValueOnce(tools.filter((t) => t.tags.includes('node')));
+	});
 
+	beforeEach((): void => {
 		sut = new ListToolsUseCase(toolRepository);
 	});
 
