@@ -12,6 +12,5 @@ export const dataSource = new DataSource({
 	entities: [path.join(__dirname, '..', 'typeorm/entities', '*.{ts,js}')],
 	migrations: [path.join(__dirname, '..', 'typeorm/migrations', '*.{ts,js}')],
 	synchronize: false,
-	ssl: process.env.NODE_ENV !== 'development',
 	logging: true,
 });
