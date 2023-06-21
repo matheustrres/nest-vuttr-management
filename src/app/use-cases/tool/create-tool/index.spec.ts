@@ -27,8 +27,8 @@ describe('CreateTool [use case]', (): void => {
 					title: 'json-server',
 				}),
 			)
-			.mockResolvedValueOnce(undefined)
-			.mockResolvedValueOnce(undefined);
+			.mockResolvedValueOnce(null)
+			.mockResolvedValueOnce(null);
 
 		toolRepository.findByLink
 			.mockResolvedValueOnce(
@@ -36,7 +36,7 @@ describe('CreateTool [use case]', (): void => {
 					link: 'https://www.fastify.io/',
 				}),
 			)
-			.mockResolvedValueOnce(undefined);
+			.mockResolvedValueOnce(null);
 	});
 
 	beforeEach((): void => {

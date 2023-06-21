@@ -18,16 +18,14 @@ describe('DeleteTool [use case]', (): void => {
 	beforeAll((): void => {
 		toolRepository = mock();
 
-		toolRepository.findById
-			.mockResolvedValueOnce(undefined)
-			.mockResolvedValueOnce(
-				makeTool({
-					id: 'random_tool_id',
-					title: 'Swagger',
-					description: 'API Documentation & Design Tools for Teams',
-					link: 'https://swagger.io/',
-				}),
-			);
+		toolRepository.findById.mockResolvedValueOnce(null).mockResolvedValueOnce(
+			makeTool({
+				id: 'random_tool_id',
+				title: 'Swagger',
+				description: 'API Documentation & Design Tools for Teams',
+				link: 'https://swagger.io/',
+			}),
+		);
 	});
 
 	beforeEach((): void => {

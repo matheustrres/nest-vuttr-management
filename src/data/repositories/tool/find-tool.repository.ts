@@ -1,6 +1,6 @@
 import { Tool } from '@domain/entities/tool.entity';
 
-type FindByToolOutput = Tool | undefined;
+type FindByToolOutput = Tool | null;
 
 export abstract class FindToolByIdRepository {
 	public abstract findById: (id: string) => Promise<FindByToolOutput>;
