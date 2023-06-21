@@ -4,6 +4,8 @@ type ListToolsRepositoryInput = {
 	tag?: string | null;
 };
 
-export interface ListToolsRepository {
-	listTools: (input?: ListToolsRepositoryInput) => Promise<Tool[]>;
+export abstract class ListToolsRepository {
+	public abstract listTools: (
+		input?: ListToolsRepositoryInput,
+	) => Promise<Tool[]>;
 }

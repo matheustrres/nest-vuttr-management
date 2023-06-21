@@ -1,3 +1,3 @@
-export interface DeleteToolRepository {
-	delete: (id: string) => Promise<void>;
+export abstract class DeleteToolRepository {
+	public abstract delete: (id: string) => Promise<void>;
 }
