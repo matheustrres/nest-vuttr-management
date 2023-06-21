@@ -10,7 +10,7 @@
     "lint": "eslint \"{src,tests}/**/*.ts\" --fix",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "prepare": "husky install",
-    "start:dev": "dotenv -e .env.local -- tsnd tsconfig-paths/register --inspect --transpile-only --ignore-watch 'node_modules' --respawn 'src/index.ts'",
+    "start:dev": "dotenv -e .env.local -- tsnd -r tsconfig-paths/register --inspect --transpile-only --ignore-watch 'node_modules' --respawn 'src/index.ts'",
     "test:cov": "npm test -- --coverage",
     "test:staged": "npm test -- --findRelatedTests",
     "test:watch": "npm test -- --watch"
