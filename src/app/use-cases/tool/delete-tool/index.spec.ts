@@ -7,6 +7,8 @@ import {
 
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 
+import { makeTool } from '@tests/factories/entities/tool.factory';
+
 import { DeleteToolUseCase } from '.';
 
 describe('DeleteTool [use case]', (): void => {
@@ -16,7 +18,16 @@ describe('DeleteTool [use case]', (): void => {
 	beforeAll((): void => {
 		toolRepository = mock();
 
-		toolRepository.findById.mockResolvedValueOnce(undefined);
+		toolRepository.findById
+			.mockResolvedValueOnce(undefined)
+			.mockResolvedValueOnce(
+				makeTool({
+					id: 'random_tool_id',
+					title: 'Swagger',
+					description: 'API Documentation & Design Tools for Teams',
+					link: 'https://swagger.io/',
+				}),
+			);
 	});
 
 	beforeEach((): void => {
@@ -33,5 +44,17 @@ describe('DeleteTool [use case]', (): void => {
 		);
 
 		expect(toolRepository.findById).toHaveBeenNthCalledWith(1, 'fake_tool_id');
+	});
+
+	it('should delete a tool by id', async (): Promise<void> => {
+		await sut.exec({
+			id: 'random_tool_id',
+		});
+
+		expect(toolRepository.findById).toHaveBeenNthCalledWith(
+			2,
+			'random_tool_id',
+		);
+		expect(toolRepository.delete).toHaveBeenNthCalledWith(1, 'random_tool_id');
 	});
 });
