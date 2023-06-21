@@ -51,11 +51,12 @@
         "groups": [
           "/^node/",
           "module",
+          "/^(.|..)\//",
           "/^@app/",
           "/^@data/",
           "/^@domain/",
+          "/^@infra/",
           "/^@tests/",
-          "/^(.|..)\//",
           [
             "sibling"
           ]
