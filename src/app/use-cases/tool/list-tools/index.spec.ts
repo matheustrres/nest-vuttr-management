@@ -15,6 +15,8 @@ describe('ListTools [use case]', (): void => {
 
 	const tools: Tool[] = [];
 
+	const tag = 'node';
+
 	beforeAll((): void => {
 		tools.push(
 			makeTool({
@@ -38,7 +40,7 @@ describe('ListTools [use case]', (): void => {
 		toolRepository.listTools
 			.mockResolvedValueOnce([])
 			.mockResolvedValueOnce(tools)
-			.mockResolvedValueOnce(tools.filter((t) => t.tags.includes('node')));
+			.mockResolvedValueOnce(tools.filter((t) => t.tags.includes(tag)));
 	});
 
 	beforeEach((): void => {
@@ -67,13 +69,9 @@ describe('ListTools [use case]', (): void => {
 	});
 
 	it('should list all registered tools with specified tag', async (): Promise<void> => {
-		const { tools: data } = await sut.exec({
-			tag: 'node',
-		});
+		const { tools: data } = await sut.exec({ tag });
 
-		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, {
-			tag: 'node',
-		});
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, { tag });
 
 		expect(data.length).toBe(2);
 		expect(data[0]).toEqual(tools[1]);
