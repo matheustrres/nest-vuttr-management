@@ -1,5 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 
+import { GlobalExceptionFilter } from '@infra/http/exceptions/global-exception-filter';
+
 export const setupApp = (app: INestApplication): INestApplication => {
 	app.useGlobalPipes(
 		new ValidationPipe({
@@ -7,6 +9,8 @@ export const setupApp = (app: INestApplication): INestApplication => {
 			forbidNonWhitelisted: true,
 		}),
 	);
+
+	app.useGlobalFilters(new GlobalExceptionFilter());
 
 	app.enableCors({
 		origin: '*',
