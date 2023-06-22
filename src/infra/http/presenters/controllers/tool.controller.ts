@@ -14,6 +14,7 @@ import {
 	ApiHeader,
 	ApiOkResponse,
 	ApiOperation,
+	ApiParam,
 	ApiTags,
 } from '@nestjs/swagger';
 
@@ -60,6 +61,20 @@ export class ToolController {
 		return new ToolViewModel().toHTTP(tool);
 	}
 
+	@ApiOperation({
+		description: 'Deletes a Tool.',
+	})
+	@ApiParam({
+		name: 'id',
+		description: 'The ID of the Tool to be deleted.',
+		required: true,
+	})
+	@ApiBadRequestResponse({
+		description: 'No Tool has been found with given ID.',
+	})
+	@ApiCreatedResponse({
+		description: 'A Tool has been successfully deleted.',
+	})
 	@Delete(':id')
 	public async deleteToolRoute(@Param('id') id: string): Promise<void> {
 		return this.deleteToolUseCase.exec({ id });
