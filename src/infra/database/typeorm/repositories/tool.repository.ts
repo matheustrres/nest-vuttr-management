@@ -11,7 +11,7 @@ import {
 	FindToolByLinkRepository,
 	FindToolByTitleRepository,
 	ListToolsRepository,
-} from '@data/repositories';
+} from '@data/contracts/repositories';
 
 import { Tool } from '@domain/entities/tool.entity';
 
