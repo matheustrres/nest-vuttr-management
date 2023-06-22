@@ -1,13 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import crypto from 'node:crypto';
 
-export class CreateToolDto {
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateToolResponse {
+	@ApiProperty({
+		type: 'string',
+		readOnly: true,
+		example: crypto.randomUUID(),
+	})
+	id: string;
+
 	@ApiProperty({
 		type: 'string',
 		example: 'Notion',
 	})
-	@IsString()
-	@IsNotEmpty()
 	title: string;
 
 	@ApiProperty({
@@ -15,16 +21,12 @@ export class CreateToolDto {
 		example:
 			'All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized.',
 	})
-	@IsString()
-	@IsNotEmpty()
 	description: string;
 
 	@ApiProperty({
 		type: 'string',
 		example: 'https://notion.so',
 	})
-	@IsString()
-	@IsNotEmpty()
 	link: string;
 
 	@ApiProperty({
@@ -38,8 +40,12 @@ export class CreateToolDto {
 			'calendar',
 		],
 	})
-	@IsArray()
-	@IsString({ each: true })
-	@IsNotEmpty()
 	tags: string[];
+
+	@ApiProperty({
+		type: 'string',
+		readOnly: true,
+		example: new Date(),
+	})
+	createdAt: Date;
 }
