@@ -11,6 +11,8 @@ import {
 	ApiBadRequestResponse,
 	ApiBody,
 	ApiCreatedResponse,
+	ApiHeader,
+	ApiOkResponse,
 	ApiOperation,
 	ApiTags,
 } from '@nestjs/swagger';
@@ -22,6 +24,7 @@ import { DeleteToolUseCase } from '@app/use-cases/delete-tool';
 import { ListToolsUseCase } from '@app/use-cases/list-tools';
 
 import { CreateToolResponse } from '@infra/docs/responses/types/create-tool.response';
+import { ListToolsResponse } from '@infra/docs/responses/types/list-tools.response';
 import { CreateToolDto } from '@infra/http/dtos/create-tool.dto';
 
 @ApiTags('tools')
@@ -34,10 +37,10 @@ export class ToolController {
 	) {}
 
 	@ApiOperation({
-		description: 'Creates a new Tool',
+		description: 'Creates a new Tool.',
 	})
 	@ApiBody({
-		description: 'Properties to create a Tool',
+		description: 'Properties to create a Tool.',
 		type: CreateToolDto,
 		required: true,
 	})
@@ -62,6 +65,23 @@ export class ToolController {
 		return this.deleteToolUseCase.exec({ id });
 	}
 
+	@ApiOperation({
+		description: 'List all registered Tools.',
+	})
+	@ApiHeader({
+		name: 'tag',
+		description: 'List only tools that contain this tag.',
+		required: false,
+		example: 'organization',
+	})
+	@ApiBadRequestResponse({
+		description: 'No Tool records were found in the database.',
+	})
+	@ApiOkResponse({
+		description: 'All Tool records found in the database.',
+		isArray: true,
+		type: ListToolsResponse,
+	})
 	@Get()
 	public async listToolsRoute(
 		@Query('tag') tag: string,
