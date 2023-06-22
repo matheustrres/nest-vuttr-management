@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 
 import { ToolController } from './presenters/controllers/tool.controller';
 
-import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
-import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
-import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
+import { CreateToolUseCase } from '@app/use-cases/create-tool';
+import { DeleteToolUseCase } from '@app/use-cases/delete-tool';
+import { ListToolsUseCase } from '@app/use-cases/list-tools';
 
 import {
 	CreateToolRepository as CreateToolRepositoryContract,

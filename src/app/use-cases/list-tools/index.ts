@@ -6,7 +6,7 @@ import {
 	IListToolsRequest,
 	IListToolsResponse,
 	IListToolsUseCase,
-} from '@domain/use-cases/tool/list-tools.use-case';
+} from '@domain/use-cases/list-tools.use-case';
 
 type ToolRepository = ListToolsRepository;
 

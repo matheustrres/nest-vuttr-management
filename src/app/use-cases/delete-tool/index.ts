@@ -7,7 +7,7 @@ import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 import {
 	DeleteToolRequest,
 	IDeleteToolUseCase,
-} from '@domain/use-cases/tool/delete-tool.use-case';
+} from '@domain/use-cases/delete-tool.use-case';
 
 type ToolRepository = FindToolByIdRepository & DeleteToolRepository;
 
