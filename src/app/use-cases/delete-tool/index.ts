@@ -1,7 +1,7 @@
 import {
 	DeleteToolRepository,
 	FindToolByIdRepository,
-} from '@data/repositories/tool';
+} from '@data/repositories';
 
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 import {

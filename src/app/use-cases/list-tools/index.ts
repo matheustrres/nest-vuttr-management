@@ -1,4 +1,4 @@
-import { ListToolsRepository } from '@data/repositories/tool';
+import { ListToolsRepository } from '@data/repositories';
 
 import { Tool } from '@domain/entities/tool.entity';
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';

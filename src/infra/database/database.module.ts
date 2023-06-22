@@ -13,7 +13,7 @@ import {
 	FindToolByLinkRepository,
 	FindToolByTitleRepository,
 	ListToolsRepository,
-} from '@data/repositories/tool';
+} from '@data/repositories';
 
 @Module({
 	imports: [
