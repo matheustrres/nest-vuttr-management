@@ -15,6 +15,8 @@
     "mig:crt": "sh -c 'typeorm-ts-node-commonjs migration:create ./src/infra/database/typeorm/migrations/$0'",
     "mig:gen": "dotenv -e .env -- node ./src/infra/database/typeorm/migrations/helpers/gen-named-migration.js",
     "prepare": "husky install",
+    "start": "node dist/src/main.js",
+    "start:debug": "nest start --debug --watch",
     "start:dev": "dotenv -e .env -- nest start --watch",
     "test:cov": "npm test -- --coverage",
     "test:staged": "npm test -- --findRelatedTests",
