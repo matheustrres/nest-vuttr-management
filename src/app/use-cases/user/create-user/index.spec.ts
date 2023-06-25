@@ -20,11 +20,13 @@ describe('CreateUser [use case]', (): void => {
 	beforeAll((): void => {
 		userRepository = mock();
 
-		userRepository.findByEmail.mockResolvedValueOnce(
-			makeUser({
-				email: 'adamsmith@gmail.com',
-			}),
-		);
+		userRepository.findByEmail
+			.mockResolvedValueOnce(
+				makeUser({
+					email: 'adamsmith@gmail.com',
+				}),
+			)
+			.mockResolvedValueOnce(null);
 	});
 
 	beforeEach((): void => {
@@ -45,5 +47,19 @@ describe('CreateUser [use case]', (): void => {
 		);
 
 		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(1, email);
+	});
+
+	it('should create a user', async (): Promise<void> => {
+		const { user } = await sut.exec({
+			name: 'Allen Brown',
+			email: 'allen.brown@gmail.com',
+			password: 'youshallnotpass',
+		});
+
+		expect(userRepository.create).toHaveBeenNthCalledWith(1, user);
+
+		expect(user.id).toBeDefined();
+		expect(user.name).toBe('Allen Brown');
+		expect(user.email).toBe('allen.brown@gmail.com');
 	});
 });
