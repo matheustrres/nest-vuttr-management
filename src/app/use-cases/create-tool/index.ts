@@ -2,7 +2,7 @@ import {
 	CreateToolRepository,
 	FindToolByLinkRepository,
 	FindToolByTitleRepository,
-} from '@data/contracts/repositories';
+} from '@data/contracts/repositories/tool';
 
 import { Tool } from '@domain/entities/tool.entity';
 import { ToolFoundError } from '@domain/errors/tool/tool-found.error';

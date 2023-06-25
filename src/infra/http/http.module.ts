@@ -13,7 +13,7 @@ import {
 	FindToolByLinkRepository as FindToolByLinkRepositoryContract,
 	FindToolByTitleRepository as FindToolByTitleRepositoryContract,
 	ListToolsRepository as ListToolsRepositoryContract,
-} from '@data/contracts/repositories';
+} from '@data/contracts/repositories/tool';
 
 import { DatabaseModule } from '@infra/database/database.module';
 

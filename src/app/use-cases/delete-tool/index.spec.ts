@@ -3,7 +3,7 @@ import { MockProxy, mock } from 'jest-mock-extended';
 import {
 	DeleteToolRepository,
 	FindToolByIdRepository,
-} from '@data/contracts/repositories';
+} from '@data/contracts/repositories/tool';
 
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 
