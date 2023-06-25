@@ -20,9 +20,9 @@ import {
 
 import { ToolVMResponse, ToolViewModel } from '../view-models/tool.view-model';
 
-import { CreateToolUseCase } from '@app/use-cases/create-tool';
-import { DeleteToolUseCase } from '@app/use-cases/delete-tool';
-import { ListToolsUseCase } from '@app/use-cases/list-tools';
+import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
+import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
+import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 
 import { CreateToolResponse } from '@infra/docs/responses/types/create-tool.response';
 import { ListToolsResponse } from '@infra/docs/responses/types/list-tools.response';
@@ -31,11 +31,15 @@ import { CreateToolDto } from '@infra/http/dtos/create-tool.dto';
 @ApiTags('tools')
 @Controller('tools')
 export class ToolController {
+  private vielModel: ToolViewModel;
+
 	constructor(
 		private readonly createToolUseCase: CreateToolUseCase,
 		private readonly deleteToolUseCase: DeleteToolUseCase,
 		private readonly listToolsUseCase: ListToolsUseCase,
-	) {}
+	) {
+    this.vielModel = new ToolViewModel();
+  }
 
 	@ApiOperation({
 		description: 'Creates a new Tool.',
@@ -58,7 +62,7 @@ export class ToolController {
 	): Promise<ToolVMResponse> {
 		const { tool } = await this.createToolUseCase.exec(body);
 
-		return new ToolViewModel().toHTTP(tool);
+		return this.vielModel.toHTTP(tool);
 	}
 
 	@ApiOperation({

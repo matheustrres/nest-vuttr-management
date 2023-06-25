@@ -10,7 +10,7 @@ import {
 	ICreateToolRequest,
 	ICreateToolResponse,
 	ICreateToolUseCase,
-} from '@domain/use-cases/create-tool.use-case';
+} from '@domain/use-cases/tool/create-tool.use-case';
 
 type ToolRepository = CreateToolRepository &
 	FindToolByLinkRepository &
@@ -38,7 +38,10 @@ export class CreateToolUseCase implements ICreateToolUseCase {
 			);
 		}
 
-		const tool = new Tool(request);
+		const tool = new Tool({
+			...request,
+			userId: '123',
+		});
 
 		await this.toolRepository.create(tool);
 
