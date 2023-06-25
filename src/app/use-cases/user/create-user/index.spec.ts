@@ -1,5 +1,8 @@
+import crypto from 'node:crypto';
+
 import { MockProxy, mock } from 'jest-mock-extended';
 
+import { HashString } from '@data/contracts/hash';
 import {
 	CreateUserRepository,
 	FindUserByEmailRepository,
@@ -12,12 +15,20 @@ import { makeUser } from '@tests/factories/entities/user.factory';
 import { CreateUserUseCase } from '.';
 
 describe('CreateUser [use case]', (): void => {
+	let hasher: MockProxy<HashString>;
 	let userRepository: MockProxy<
 		CreateUserRepository & FindUserByEmailRepository
 	>;
+
 	let sut: CreateUserUseCase;
 
+	const hash = crypto
+		.createHash('sha256')
+		.update('youshallnotpass')
+		.digest('hex');
+
 	beforeAll((): void => {
+		hasher = mock();
 		userRepository = mock();
 
 		userRepository.findByEmail
@@ -27,10 +38,12 @@ describe('CreateUser [use case]', (): void => {
 				}),
 			)
 			.mockResolvedValueOnce(null);
+
+		hasher.hashString.mockResolvedValueOnce(hash);
 	});
 
 	beforeEach((): void => {
-		sut = new CreateUserUseCase(userRepository);
+		sut = new CreateUserUseCase(hasher, userRepository);
 	});
 
 	it('should throw when creating a user with an already registered email', async (): Promise<void> => {
@@ -61,5 +74,6 @@ describe('CreateUser [use case]', (): void => {
 		expect(user.id).toBeDefined();
 		expect(user.name).toBe('Allen Brown');
 		expect(user.email).toBe('allen.brown@gmail.com');
+		expect(user.password).toEqual(hash);
 	});
 });
