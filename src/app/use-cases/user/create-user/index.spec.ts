@@ -1,5 +1,3 @@
-import crypto from 'node:crypto';
-
 import { MockProxy, mock } from 'jest-mock-extended';
 
 import { HashString } from '@data/contracts/hash';
@@ -22,10 +20,7 @@ describe('CreateUser [use case]', (): void => {
 
 	let sut: CreateUserUseCase;
 
-	const hash = crypto
-		.createHash('sha256')
-		.update('youshallnotpass')
-		.digest('hex');
+	const hash = 'this_is_a_super_hashed_password_text';
 
 	beforeAll((): void => {
 		hasher = mock();
