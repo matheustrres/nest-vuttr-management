@@ -45,23 +45,23 @@ import {
 		},
 		{
 			provide: DeleteToolRepository,
-			useClass: TypeORMToolRepository,
+			useExisting: CreateToolRepository,
 		},
 		{
 			provide: FindToolByIdRepository,
-			useClass: TypeORMToolRepository,
+			useExisting: CreateToolRepository,
 		},
 		{
 			provide: FindToolByLinkRepository,
-			useClass: TypeORMToolRepository,
+			useExisting: CreateToolRepository,
 		},
 		{
 			provide: FindToolByTitleRepository,
-			useClass: TypeORMToolRepository,
+			useExisting: CreateToolRepository,
 		},
 		{
 			provide: ListToolsRepository,
-			useClass: TypeORMToolRepository,
+			useExisting: CreateToolRepository,
 		},
 		// user-related
 		{
@@ -70,7 +70,7 @@ import {
 		},
 		{
 			provide: FindUserByEmailRepository,
-			useClass: TypeORMUserRepository,
+			useExisting: CreateUserRepository,
 		},
 	],
 	exports: [
