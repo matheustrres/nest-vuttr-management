@@ -7,6 +7,8 @@ import {
 	ApiTags,
 } from '@nestjs/swagger';
 
+import { UserVMResponse, UserViewModel } from '../view-models/user.view-model';
+
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
 
 import { CreateUserResponse } from '@infra/docs/responses/types/user';
@@ -33,7 +35,11 @@ export class UserController {
 		type: CreateUserResponse,
 	})
 	@Post()
-	public async createToolRoute(@Body() body: CreateUserDto) {
-		return this.createUserUseCase.exec(body);
+	public async createToolRoute(
+		@Body() body: CreateUserDto,
+	): Promise<UserVMResponse> {
+		const { user } = await this.createUserUseCase.exec(body);
+
+		return UserViewModel.toHTTP(user);
 	}
 }
