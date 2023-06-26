@@ -7,6 +7,7 @@ export const setupDocs = (app: INestApplication): void => {
 		.setDescription('How to use VUTTR Manager routes')
 		.setVersion('1.0.0')
 		.addTag('tools')
+		.addTag('users')
 		.build();
 
 	const openAPIObj: OpenAPIObject = SwaggerModule.createDocument(app, config);
