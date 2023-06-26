@@ -26,20 +26,20 @@ import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 
 import { CreateToolResponse } from '@infra/docs/responses/types/create-tool.response';
 import { ListToolsResponse } from '@infra/docs/responses/types/list-tools.response';
-import { CreateToolDto } from '@infra/http/dtos/create-tool.dto';
+import { CreateToolDto } from '@infra/http/dtos/tool';
 
 @ApiTags('tools')
 @Controller('tools')
 export class ToolController {
-  private vielModel: ToolViewModel;
+	private vielModel: ToolViewModel;
 
 	constructor(
 		private readonly createToolUseCase: CreateToolUseCase,
 		private readonly deleteToolUseCase: DeleteToolUseCase,
 		private readonly listToolsUseCase: ListToolsUseCase,
 	) {
-    this.vielModel = new ToolViewModel();
-  }
+		this.vielModel = new ToolViewModel();
+	}
 
 	@ApiOperation({
 		description: 'Creates a new Tool.',
