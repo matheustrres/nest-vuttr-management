@@ -26,9 +26,18 @@ describe('AuthUser [use case]', (): void => {
 					email: 'adamsmith@gmail.com',
 					password: 'super_secret_hashed_password_text',
 				}),
+			)
+			.mockResolvedValueOnce(
+				makeUser({
+					name: 'Bob Brown',
+					email: 'bob.brown@live.com',
+					password: 'random_hashed_password_text',
+				}),
 			);
 
-		hasher.compareStrings.mockResolvedValueOnce(false);
+		hasher.compareStrings
+			.mockResolvedValueOnce(false)
+			.mockResolvedValueOnce(true);
 	});
 
 	beforeEach((): void => {
@@ -66,5 +75,24 @@ describe('AuthUser [use case]', (): void => {
 			plainText: 'randompassword',
 			hash: 'super_secret_hashed_password_text',
 		});
+	});
+
+	it('should return a user', async (): Promise<void> => {
+		const { user } = await sut.exec({
+			email: 'bob.brown@live.com',
+			password: 'random_hashed_password_text',
+		});
+
+		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(
+			3,
+			'bob.brown@live.com',
+		);
+		expect(hasher.compareStrings).toHaveBeenNthCalledWith(2, {
+			plainText: 'random_hashed_password_text',
+			hash: 'random_hashed_password_text',
+		});
+
+		expect(user.id).toBeDefined();
+		expect(user.email).toBe('bob.brown@live.com');
 	});
 });
