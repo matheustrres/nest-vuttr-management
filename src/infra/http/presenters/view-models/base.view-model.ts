@@ -1,4 +1,3 @@
-export interface BaseViewModel<TModel, TResponse> {
-	toHTTP: (model: TModel) => TResponse;
-	mapArrayToHTTP: (models: TModel[]) => TResponse[];
+export abstract class BaseViewModel {
+	public static toHTTP: <TModel, TResponse>(model: TModel) => TResponse;
 }

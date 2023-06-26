@@ -1,6 +1,6 @@
 import { BaseViewModel } from './base.view-model';
 
-import { TypeORMToolEntity } from '@infra/database/typeorm/entities/tool.entity';
+import { Tool } from '@domain/entities/tool.entity';
 
 export type ToolVMResponse = {
 	id: string;
@@ -11,10 +11,8 @@ export type ToolVMResponse = {
 	createdAt: Date;
 };
 
-export class ToolViewModel
-	implements BaseViewModel<TypeORMToolEntity, ToolVMResponse>
-{
-	public toHTTP(model: TypeORMToolEntity): ToolVMResponse {
+export class ToolViewModel implements BaseViewModel {
+	public static toHTTP(model: Tool): ToolVMResponse {
 		return {
 			id: model.id,
 			title: model.title,
@@ -23,9 +21,5 @@ export class ToolViewModel
 			tags: model.tags,
 			createdAt: model.createdAt,
 		};
-	}
-
-	public mapArrayToHTTP(models: TypeORMToolEntity[]): ToolVMResponse[] {
-		return models.map(this.toHTTP);
 	}
 }

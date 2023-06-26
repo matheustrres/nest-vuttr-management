@@ -31,15 +31,11 @@ import { CreateToolDto } from '@infra/http/dtos/tool';
 @ApiTags('tools')
 @Controller('tools')
 export class ToolController {
-	private vielModel: ToolViewModel;
-
 	constructor(
 		private readonly createToolUseCase: CreateToolUseCase,
 		private readonly deleteToolUseCase: DeleteToolUseCase,
 		private readonly listToolsUseCase: ListToolsUseCase,
-	) {
-		this.vielModel = new ToolViewModel();
-	}
+	) {}
 
 	@ApiOperation({
 		description: 'Creates a new Tool.',
@@ -62,7 +58,7 @@ export class ToolController {
 	): Promise<ToolVMResponse> {
 		const { tool } = await this.createToolUseCase.exec(body);
 
-		return this.vielModel.toHTTP(tool);
+		return ToolViewModel.toHTTP(tool);
 	}
 
 	@ApiOperation({
@@ -107,6 +103,6 @@ export class ToolController {
 	): Promise<ToolVMResponse[]> {
 		const { tools } = await this.listToolsUseCase.exec({ tag });
 
-		return new ToolViewModel().mapArrayToHTTP(tools);
+		return tools.map(ToolViewModel.toHTTP);
 	}
 }
