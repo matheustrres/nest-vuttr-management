@@ -51,7 +51,7 @@ describe('AuthUser [use case]', (): void => {
 		});
 
 		await expect(promise).rejects.toThrow(
-			new UserAuthenticationError('Invalid email address!'),
+			new UserAuthenticationError('Invalid credentials. Please, try again!'),
 		);
 
 		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(1, 'fake_email');
@@ -64,7 +64,7 @@ describe('AuthUser [use case]', (): void => {
 		});
 
 		await expect(promise).rejects.toThrow(
-			new UserAuthenticationError('Wrong password!'),
+			new UserAuthenticationError('Invalid credentials. Please, try again!'),
 		);
 
 		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(
