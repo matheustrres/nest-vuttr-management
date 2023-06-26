@@ -5,6 +5,8 @@ import { FindUserByEmailRepository } from '@data/contracts/repositories/user';
 
 import { UserAuthenticationError } from '@domain/errors/user/user-auth.error';
 
+import { makeUser } from '@tests/factories/entities/user.factory';
+
 import { AuthUserUseCase } from '.';
 
 describe('AuthUser [use case]', (): void => {
@@ -17,7 +19,16 @@ describe('AuthUser [use case]', (): void => {
 		hasher = mock();
 		userRepository = mock();
 
-		userRepository.findByEmail.mockResolvedValueOnce(null);
+		userRepository.findByEmail
+			.mockResolvedValueOnce(null)
+			.mockResolvedValueOnce(
+				makeUser({
+					email: 'adamsmith@gmail.com',
+					password: 'super_secret_hashed_password_text',
+				}),
+			);
+
+		hasher.compareStrings.mockResolvedValueOnce(false);
 	});
 
 	beforeEach((): void => {
@@ -31,9 +42,29 @@ describe('AuthUser [use case]', (): void => {
 		});
 
 		await expect(promise).rejects.toThrow(
-			new UserAuthenticationError('Invalid credentials. Please, try again!'),
+			new UserAuthenticationError('Invalid email address!'),
 		);
 
 		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(1, 'fake_email');
+	});
+
+	it('should throw when incoming password is different from current password', async (): Promise<void> => {
+		const promise = sut.exec({
+			email: 'adamsmith@gmail.com',
+			password: 'randompassword',
+		});
+
+		await expect(promise).rejects.toThrow(
+			new UserAuthenticationError('Wrong password!'),
+		);
+
+		expect(userRepository.findByEmail).toHaveBeenNthCalledWith(
+			2,
+			'adamsmith@gmail.com',
+		);
+		expect(hasher.compareStrings).toHaveBeenNthCalledWith(1, {
+			plainText: 'randompassword',
+			hash: 'super_secret_hashed_password_text',
+		});
 	});
 });
