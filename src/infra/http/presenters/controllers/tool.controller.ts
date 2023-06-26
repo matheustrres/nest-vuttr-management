@@ -24,8 +24,10 @@ import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 
-import { CreateToolResponse } from '@infra/docs/responses/types/create-tool.response';
-import { ListToolsResponse } from '@infra/docs/responses/types/list-tools.response';
+import {
+	CreateToolResponse,
+	ListToolsResponse,
+} from '@infra/docs/responses/types/tool';
 import { CreateToolDto } from '@infra/http/dtos/tool';
 
 @ApiTags('tools')
