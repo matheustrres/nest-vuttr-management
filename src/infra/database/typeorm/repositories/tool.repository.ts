@@ -3,6 +3,7 @@ import { Repository, ArrayContains } from 'typeorm';
 
 import { dataSource } from '../datasource';
 import { TypeORMToolEntity } from '../entities/tool.entity';
+import { TypeORMToolMapper } from '../mappers/tool.mapper';
 
 import {
 	CreateToolRepository,
@@ -25,9 +26,11 @@ type ToolRepository = CreateToolRepository &
 @Injectable()
 export class TypeORMToolRepository implements ToolRepository {
 	private repository: Repository<TypeORMToolEntity>;
+	private mapper: TypeORMToolMapper;
 
 	constructor() {
 		this.repository = dataSource.getRepository(TypeORMToolEntity);
+		this.mapper = new TypeORMToolMapper();
 	}
 
 	public async create(tool: Tool): Promise<void> {
@@ -39,38 +42,52 @@ export class TypeORMToolRepository implements ToolRepository {
 	}
 
 	public async findById(id: string): Promise<Tool | null> {
-		return this.repository.findOne({
+		const tool = await this.repository.findOne({
 			where: {
 				id,
 			},
 		});
+
+		if (!tool) return null;
+
+		return this.mapper.toDomain(tool);
 	}
 
 	public async findByLink(link: string): Promise<Tool | null> {
-		return this.repository.findOne({
+		const tool = await this.repository.findOne({
 			where: {
 				link,
 			},
 		});
+
+		if (!tool) return null;
+
+		return this.mapper.toDomain(tool);
 	}
 
 	public async findByTitle(title: string): Promise<Tool | null> {
-		return this.repository.findOne({
+		const tool = await this.repository.findOne({
 			where: {
 				title,
 			},
 		});
+
+		if (!tool) return null;
+
+		return this.mapper.toDomain(tool);
 	}
 
 	public async listTools(
 		input?: { tag?: string | null } | undefined,
 	): Promise<Tool[]> {
-		return this.repository.find({
+		const tools = await this.repository.find({
 			...(input?.tag && {
 				where: {
 					tags: ArrayContains([input.tag]),
 				},
 			}),
 		});
+
+		return tools.map(this.mapper.toDomain);
 	}
 }
