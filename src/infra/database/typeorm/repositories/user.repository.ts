@@ -17,11 +17,9 @@ type UserRepository = CreateUserRepository & FindUserByEmailRepository;
 @Injectable()
 export class TypeORMUserRepository implements UserRepository {
 	private repository: Repository<TypeORMUserEntity>;
-	private mapper: TypeORMUserMapper;
 
 	constructor() {
 		this.repository = dataSource.getRepository(TypeORMUserEntity);
-		this.mapper = new TypeORMUserMapper();
 	}
 
 	public async create(user: User): Promise<void> {
@@ -37,6 +35,6 @@ export class TypeORMUserRepository implements UserRepository {
 
 		if (!user) return null;
 
-		return this.mapper.toDomain(user);
+		return TypeORMUserMapper.toDomain(user);
 	}
 }

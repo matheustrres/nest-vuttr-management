@@ -3,10 +3,14 @@ import { TypeORMBaseMapper } from './base.mapper';
 
 import { Tool } from '@domain/entities/tool.entity';
 
-export class TypeORMToolMapper
-	implements TypeORMBaseMapper<Tool, TypeORMToolEntity>
-{
-	public toDomain(persistence: TypeORMToolEntity): Tool {
+export class TypeORMToolMapper implements TypeORMBaseMapper {
+	private constructor() {
+		throw new Error(
+			'TypeORMToolMapper is a static class and should not be instantiated.',
+		);
+	}
+
+	public static toDomain(persistence: TypeORMToolEntity): Tool {
 		return new Tool({
 			id: persistence.id,
 			title: persistence.title,

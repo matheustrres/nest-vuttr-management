@@ -26,11 +26,9 @@ type ToolRepository = CreateToolRepository &
 @Injectable()
 export class TypeORMToolRepository implements ToolRepository {
 	private repository: Repository<TypeORMToolEntity>;
-	private mapper: TypeORMToolMapper;
 
 	constructor() {
 		this.repository = dataSource.getRepository(TypeORMToolEntity);
-		this.mapper = new TypeORMToolMapper();
 	}
 
 	public async create(tool: Tool): Promise<void> {
@@ -50,7 +48,7 @@ export class TypeORMToolRepository implements ToolRepository {
 
 		if (!tool) return null;
 
-		return this.mapper.toDomain(tool);
+		return TypeORMToolMapper.toDomain(tool);
 	}
 
 	public async findByLink(link: string): Promise<Tool | null> {
@@ -62,7 +60,7 @@ export class TypeORMToolRepository implements ToolRepository {
 
 		if (!tool) return null;
 
-		return this.mapper.toDomain(tool);
+		return TypeORMToolMapper.toDomain(tool);
 	}
 
 	public async findByTitle(title: string): Promise<Tool | null> {
@@ -74,7 +72,7 @@ export class TypeORMToolRepository implements ToolRepository {
 
 		if (!tool) return null;
 
-		return this.mapper.toDomain(tool);
+		return TypeORMToolMapper.toDomain(tool);
 	}
 
 	public async listTools(
@@ -88,6 +86,6 @@ export class TypeORMToolRepository implements ToolRepository {
 			}),
 		});
 
-		return tools.map(this.mapper.toDomain);
+		return tools.map(TypeORMToolMapper.toDomain);
 	}
 }
