@@ -7,7 +7,6 @@ export type UserVMResponse = {
 	id: string;
 	name: string;
 	email: string;
-	password: string;
 	tools?: ToolVMResponse[];
 	createdAt: Date;
 };
@@ -18,7 +17,6 @@ export class UserViewModel implements BaseViewModel {
 			id: model.id,
 			name: model.name,
 			email: model.email,
-			password: model.password,
 			tools: model.tools?.map(ToolViewModel.toHTTP),
 			createdAt: model.createdAt,
 		};
