@@ -80,4 +80,4 @@ type CreateUserRepository = CreateUserRepositoryContract &
 	],
 	controllers: [ToolController, UserController],
 })
-export class HTTPmodule {}
+export class HTTPModule {}
