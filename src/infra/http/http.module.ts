@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 
+import { SessionSerializer } from './auth/session.serializer';
+import { JWTStrategy } from './auth/strategies/jwt.strategy';
+import { LocalStrategy } from './auth/strategies/local.strategy';
 import { ToolController } from './presenters/controllers/tool.controller';
 import { UserController } from './presenters/controllers/user.controller';
 
@@ -8,9 +12,10 @@ import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 // user use-cases
+import { AuthUserUseCase } from '@app/use-cases/user/auth-user';
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
 
-import { HashString } from '@data/contracts/hash';
+import { HashString, CompareStrings } from '@data/contracts/hash';
 // tool repositories
 import {
 	CreateToolRepository as CreateToolRepositoryContract,
@@ -24,7 +29,7 @@ import {
 // user repositories
 import {
 	CreateUserRepository as CreateUserRepositoryContract,
-	FindUserByEmailRepository as FindUserByEmailRepository,
+	FindUserByEmailRepository as FindUserByEmailRepositoryContract,
 } from '@data/contracts/repositories/user';
 
 import { DatabaseModule } from '@infra/database/database.module';
@@ -39,10 +44,18 @@ type DeleteToolRepository = DeleteToolRepositoryContract &
 
 // user repositories contracts
 type CreateUserRepository = CreateUserRepositoryContract &
-	FindUserByEmailRepository;
+	FindUserByEmailRepositoryContract;
+type FindUserRepository = FindUserByEmailRepositoryContract;
 
 @Module({
-	imports: [DatabaseModule, HashModule],
+	imports: [
+		DatabaseModule,
+		HashModule,
+		PassportModule.register({
+			defaultStrategy: 'jwt',
+			session: true,
+		}),
+	],
 	providers: [
 		// tool-related
 		{
@@ -70,6 +83,14 @@ type CreateUserRepository = CreateUserRepositoryContract &
 		},
 		// user-related
 		{
+			provide: AuthUserUseCase,
+			useFactory: (
+				hasher: CompareStrings,
+				userRepository: FindUserRepository,
+			): AuthUserUseCase => new AuthUserUseCase(hasher, userRepository),
+			inject: [CompareStrings, FindUserByEmailRepositoryContract],
+		},
+		{
 			provide: CreateUserUseCase,
 			useFactory: (
 				hasher: HashString,
@@ -77,6 +98,9 @@ type CreateUserRepository = CreateUserRepositoryContract &
 			): CreateUserUseCase => new CreateUserUseCase(hasher, userRepository),
 			inject: [HashString, CreateUserRepositoryContract],
 		},
+		LocalStrategy,
+		JWTStrategy,
+		SessionSerializer,
 	],
 	controllers: [ToolController, UserController],
 })
