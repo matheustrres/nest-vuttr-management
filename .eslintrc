@@ -53,6 +53,7 @@
           "module",
           "/^(.|..)\//",
           "/^@app/",
+          "/^@config/",
           "/^@data/",
           "/^@domain/",
           "/^@infra/",

@@ -1,4 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+
+import { sessionConfig } from '@config/session.config';
 
 import { GlobalExceptionFilter } from '@infra/http/exceptions/global-exception-filter';
 
@@ -12,6 +16,8 @@ export const setupApp = (app: INestApplication): INestApplication => {
 
 	app.useGlobalFilters(new GlobalExceptionFilter());
 
+	app.use(sessionConfig);
+
 	app.enableCors({
 		origin: '*',
 		methods: ['GET', 'POST', 'DELETE'],
@@ -24,6 +30,11 @@ export const setupApp = (app: INestApplication): INestApplication => {
 			'X-Requested-With',
 		],
 	});
+
+	app.use(passport.session());
+	app.use(passport.initialize());
+
+	app.use(cookieParser(process.env.SESSION_SECRET_KEY as string));
 
 	/* ... */
 
