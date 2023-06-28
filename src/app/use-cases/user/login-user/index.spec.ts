@@ -7,13 +7,13 @@ import { UserAuthenticationError } from '@domain/errors/user/user-auth.error';
 
 import { makeUser } from '@tests/factories/entities/user.factory';
 
-import { AuthUserUseCase } from '.';
+import { LoginUserUseCase } from '.';
 
-describe('AuthUser [use case]', (): void => {
+describe('LoginUser [use case]', (): void => {
 	let hasher: MockProxy<CompareStrings>;
 	let userRepository: MockProxy<FindUserByEmailRepository>;
 
-	let sut: AuthUserUseCase;
+	let sut: LoginUserUseCase;
 
 	beforeAll((): void => {
 		hasher = mock();
@@ -41,7 +41,7 @@ describe('AuthUser [use case]', (): void => {
 	});
 
 	beforeEach((): void => {
-		sut = new AuthUserUseCase(hasher, userRepository);
+		sut = new LoginUserUseCase(hasher, userRepository);
 	});
 
 	it('should throw when authenticating a non-existing user', async (): Promise<void> => {

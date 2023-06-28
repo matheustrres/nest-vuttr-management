@@ -12,8 +12,8 @@ import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 // user use-cases
-import { AuthUserUseCase } from '@app/use-cases/user/auth-user';
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
+import { LoginUserUseCase } from '@app/use-cases/user/login-user';
 
 import { HashString, CompareStrings } from '@data/contracts/hash';
 // tool repositories
@@ -83,11 +83,11 @@ type FindUserRepository = FindUserByEmailRepositoryContract;
 		},
 		// user-related
 		{
-			provide: AuthUserUseCase,
+			provide: LoginUserUseCase,
 			useFactory: (
 				hasher: CompareStrings,
 				userRepository: FindUserRepository,
-			): AuthUserUseCase => new AuthUserUseCase(hasher, userRepository),
+			): LoginUserUseCase => new LoginUserUseCase(hasher, userRepository),
 			inject: [CompareStrings, FindUserByEmailRepositoryContract],
 		},
 		{
