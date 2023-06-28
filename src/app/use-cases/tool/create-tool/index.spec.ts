@@ -52,14 +52,17 @@ describe('CreateTool [use case]', (): void => {
 			description:
 				'Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.',
 			tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
+			userId: 'fake_user_id',
 		});
 
 		await expect(promise).rejects.toThrow(
 			new ToolFoundError(`Tool already exists with title "${title}".`),
 		);
 
-		expect(toolRepository.findByTitle).toHaveBeenCalledTimes(1);
-		expect(toolRepository.findByTitle).toHaveBeenCalledWith(title);
+		expect(toolRepository.findByTitle).toHaveBeenNthCalledWith(1, {
+			title: 'json-server',
+			userId: 'fake_user_id',
+		});
 		expect(toolRepository.findByLink).toBeCalledTimes(0);
 	});
 
@@ -72,16 +75,21 @@ describe('CreateTool [use case]', (): void => {
 			description:
 				'Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.',
 			tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
+			userId: 'fake_user_id',
 		});
 
 		await expect(promise).rejects.toThrow(
 			new ToolFoundError(`Tool already exists with link "${link}".`),
 		);
 
-		expect(toolRepository.findByTitle).toHaveBeenCalledWith('fastify');
-		expect(toolRepository.findByTitle).toHaveBeenCalledTimes(2);
-		expect(toolRepository.findByLink).toHaveBeenCalledTimes(1);
-		expect(toolRepository.findByLink).toHaveBeenCalledWith(link);
+		expect(toolRepository.findByTitle).toHaveBeenNthCalledWith(2, {
+			title: 'fastify',
+			userId: 'fake_user_id',
+		});
+		expect(toolRepository.findByLink).toHaveBeenNthCalledWith(1, {
+			link: 'https://www.fastify.io/',
+			userId: 'fake_user_id',
+		});
 	});
 
 	it('should create a tool', async (): Promise<void> => {
@@ -97,10 +105,18 @@ describe('CreateTool [use case]', (): void => {
 				'writing',
 				'calendar',
 			],
+			userId: 'random_user_id',
 		});
 
-		expect(toolRepository.create).toHaveBeenCalledTimes(1);
-		expect(toolRepository.create).toHaveBeenCalledWith(tool);
+		expect(toolRepository.create).toHaveBeenNthCalledWith(1, tool);
+		expect(toolRepository.findByTitle).toHaveBeenNthCalledWith(3, {
+			title: 'Notion',
+			userId: 'random_user_id',
+		});
+		expect(toolRepository.findByLink).toHaveBeenNthCalledWith(2, {
+			link: 'https://notion.so',
+			userId: 'random_user_id',
+		});
 
 		expect(tool).toBeDefined();
 		expect(tool.id).toBeDefined();

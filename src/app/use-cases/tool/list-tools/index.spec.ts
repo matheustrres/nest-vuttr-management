@@ -48,19 +48,27 @@ describe('ListTools [use case]', (): void => {
 	});
 
 	it('should throw when listing tools and there is no data', async (): Promise<void> => {
-		const promise = sut.exec();
+		const promise = sut.exec({
+			userId: 'random_user_id',
+		});
 
 		await expect(promise).rejects.toThrow(
 			new ToolNotFoundError('No tools were found.'),
 		);
 
-		expect(toolRepository.listTools).toHaveBeenCalledTimes(1);
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(1, {
+			userId: 'random_user_id',
+		});
 	});
 
 	it('should list all registered tools', async (): Promise<void> => {
-		const { tools: data } = await sut.exec();
+		const { tools: data } = await sut.exec({
+			userId: 'random_user_id',
+		});
 
-		expect(toolRepository.listTools).toHaveBeenCalledTimes(2);
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(2, {
+			userId: 'random_user_id',
+		});
 
 		expect(data.length).toBe(3);
 		expect(data[0]).toEqual(tools[0]);
@@ -69,9 +77,15 @@ describe('ListTools [use case]', (): void => {
 	});
 
 	it('should list all registered tools with specified tag', async (): Promise<void> => {
-		const { tools: data } = await sut.exec({ tag });
+		const { tools: data } = await sut.exec({
+			tag,
+			userId: 'random_user_id',
+		});
 
-		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, { tag });
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, {
+			tag,
+			userId: 'random_user_id',
+		});
 
 		expect(data.length).toBe(2);
 		expect(data[0]).toEqual(tools[1]);
