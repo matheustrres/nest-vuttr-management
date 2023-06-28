@@ -12,13 +12,17 @@ export type UserVMResponse = {
 };
 
 export class UserViewModel implements BaseViewModel {
-	public static toHTTP(model: User): UserVMResponse {
+	public static toHTTP(model: User, loadTools = false): UserVMResponse {
+		const showTools = model.tools?.length && loadTools;
+
 		return {
 			id: model.id,
 			name: model.name,
 			email: model.email,
-			tools: model.tools?.map(ToolViewModel.toHTTP),
 			createdAt: model.createdAt,
+			...(showTools && {
+				tools: model.tools!.map(ToolViewModel.toHTTP),
+			}),
 		};
 	}
 }

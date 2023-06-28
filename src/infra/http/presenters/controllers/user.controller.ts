@@ -74,6 +74,6 @@ export class UserController {
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(SessionAuthGuard, JWTAuthGuard)
 	public meRoute(@AuthedUser() user: User): UserVMResponse {
-		return UserViewModel.toHTTP(user);
+		return UserViewModel.toHTTP(user, true);
 	}
 }
