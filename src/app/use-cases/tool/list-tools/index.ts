@@ -13,9 +13,10 @@ type ToolRepository = ListToolsRepository;
 export class ListToolsUseCase implements IListToolsUseCase {
 	constructor(private toolRepository: ToolRepository) {}
 
-	public async exec(request?: IListToolsRequest): Promise<IListToolsResponse> {
+	public async exec(request: IListToolsRequest): Promise<IListToolsResponse> {
 		const tools: Tool[] = await this.toolRepository.listTools({
 			tag: request?.tag,
+			userId: request.userId,
 		});
 
 		if (!tools.length) {

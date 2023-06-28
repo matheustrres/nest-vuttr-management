@@ -1,5 +1,6 @@
 export type DeleteToolRequest = {
 	id: string;
+	userId: string;
 };
 
 export type DeleteToolResponse = void;

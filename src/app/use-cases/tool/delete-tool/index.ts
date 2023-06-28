@@ -15,7 +15,10 @@ export class DeleteToolUseCase implements IDeleteToolUseCase {
 	constructor(private toolRepository: ToolRepository) {}
 
 	public async exec(request: DeleteToolRequest): Promise<void> {
-		const tool = await this.toolRepository.findById(request.id);
+		const tool = await this.toolRepository.findById({
+			id: request.id,
+			userId: request.userId,
+		});
 
 		if (!tool) {
 			throw new ToolNotFoundError(
@@ -23,6 +26,9 @@ export class DeleteToolUseCase implements IDeleteToolUseCase {
 			);
 		}
 
-		return this.toolRepository.delete(tool.id);
+		return this.toolRepository.delete({
+			id: request.id,
+			userId: request.userId,
+		});
 	}
 }

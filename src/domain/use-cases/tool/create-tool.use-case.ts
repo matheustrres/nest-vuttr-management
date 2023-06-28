@@ -5,6 +5,7 @@ export type ICreateToolRequest = {
 	link: string;
 	description: string;
 	tags: string[];
+	userId: string;
 };
 
 export type ICreateToolResponse = {

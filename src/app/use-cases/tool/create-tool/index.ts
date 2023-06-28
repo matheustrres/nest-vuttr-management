@@ -20,9 +20,10 @@ export class CreateToolUseCase implements ICreateToolUseCase {
 	constructor(private toolRepository: ToolRepository) {}
 
 	public async exec(request: ICreateToolRequest): Promise<ICreateToolResponse> {
-		const toolFoundByTitle = await this.toolRepository.findByTitle(
-			request.title,
-		);
+		const toolFoundByTitle = await this.toolRepository.findByTitle({
+			title: request.title,
+			userId: request.userId,
+		});
 
 		if (toolFoundByTitle) {
 			throw new ToolFoundError(
@@ -30,7 +31,10 @@ export class CreateToolUseCase implements ICreateToolUseCase {
 			);
 		}
 
-		const toolFoundByLink = await this.toolRepository.findByLink(request.link);
+		const toolFoundByLink = await this.toolRepository.findByLink({
+			link: request.link,
+			userId: request.userId,
+		});
 
 		if (toolFoundByLink) {
 			throw new ToolFoundError(
@@ -38,10 +42,7 @@ export class CreateToolUseCase implements ICreateToolUseCase {
 			);
 		}
 
-		const tool = new Tool({
-			...request,
-			userId: '123',
-		});
+		const tool = new Tool(request);
 
 		await this.toolRepository.create(tool);
 

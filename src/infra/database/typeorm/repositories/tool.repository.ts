@@ -8,9 +8,13 @@ import { TypeORMToolMapper } from '../mappers/tool.mapper';
 import {
 	CreateToolRepository,
 	DeleteToolRepository,
+	DeleteToolRepositoryInput,
 	FindToolByIdRepository,
+	FindToolByIdRepositoryInput,
 	FindToolByLinkRepository,
+	FindToolByLinkRepositoryInput,
 	FindToolByTitleRepository,
+	FindToolByTitleRepositoryInput,
 	ListToolsRepository,
 } from '@data/contracts/repositories/tool';
 
@@ -35,14 +39,20 @@ export class TypeORMToolRepository implements ToolRepository {
 		await this.repository.save(tool);
 	}
 
-	public async delete(id: string): Promise<void> {
-		await this.repository.delete(id);
+	public async delete(input: DeleteToolRepositoryInput): Promise<void> {
+		await this.repository.delete({
+			id: input.id,
+			userId: input.userId,
+		});
 	}
 
-	public async findById(id: string): Promise<Tool | null> {
+	public async findById(
+		input: FindToolByIdRepositoryInput,
+	): Promise<Tool | null> {
 		const tool = await this.repository.findOne({
 			where: {
-				id,
+				id: input.id,
+				userId: input.userId,
 			},
 		});
 
@@ -51,10 +61,13 @@ export class TypeORMToolRepository implements ToolRepository {
 		return TypeORMToolMapper.toDomain(tool);
 	}
 
-	public async findByLink(link: string): Promise<Tool | null> {
+	public async findByLink(
+		input: FindToolByLinkRepositoryInput,
+	): Promise<Tool | null> {
 		const tool = await this.repository.findOne({
 			where: {
-				link,
+				link: input.link,
+				userId: input.userId,
 			},
 		});
 
@@ -63,10 +76,13 @@ export class TypeORMToolRepository implements ToolRepository {
 		return TypeORMToolMapper.toDomain(tool);
 	}
 
-	public async findByTitle(title: string): Promise<Tool | null> {
+	public async findByTitle(
+		input: FindToolByTitleRepositoryInput,
+	): Promise<Tool | null> {
 		const tool = await this.repository.findOne({
 			where: {
-				title,
+				title: input.title,
+				userId: input.userId,
 			},
 		});
 
@@ -75,15 +91,17 @@ export class TypeORMToolRepository implements ToolRepository {
 		return TypeORMToolMapper.toDomain(tool);
 	}
 
-	public async listTools(
-		input?: { tag?: string | null } | undefined,
-	): Promise<Tool[]> {
+	public async listTools(input: {
+		userId: string;
+		tag?: string | null;
+	}): Promise<Tool[]> {
 		const tools = await this.repository.find({
-			...(input?.tag && {
-				where: {
+			where: {
+				userId: input.userId,
+				...(input.tag && {
 					tags: ArrayContains([input.tag]),
-				},
-			}),
+				}),
+			},
 		});
 
 		return tools.map(TypeORMToolMapper.toDomain);
