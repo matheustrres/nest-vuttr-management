@@ -6,6 +6,7 @@ import {
 	Param,
 	Post,
 	Query,
+	UseGuards,
 } from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
@@ -24,14 +25,20 @@ import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 
+import { User } from '@domain/entities/user.entity';
+
 import {
 	CreateToolResponse,
 	ListToolsResponse,
 } from '@infra/docs/responses/types/tool';
+import { AuthedUser } from '@infra/http/auth/decorators/authed-user.decorator';
+import { JWTAuthGuard } from '@infra/http/auth/guards/jwt-auth.guard';
+import { SessionAuthGuard } from '@infra/http/auth/guards/session-auth.guard';
 import { CreateToolDto } from '@infra/http/dtos/tool';
 
 @ApiTags('tools')
 @Controller('tools')
+@UseGuards(SessionAuthGuard, JWTAuthGuard)
 export class ToolController {
 	constructor(
 		private readonly createToolUseCase: CreateToolUseCase,
@@ -56,9 +63,13 @@ export class ToolController {
 	})
 	@Post()
 	public async createToolRoute(
+		@AuthedUser() user: User,
 		@Body() body: CreateToolDto,
 	): Promise<ToolVMResponse> {
-		const { tool } = await this.createToolUseCase.exec(body);
+		const { tool } = await this.createToolUseCase.exec({
+			...body,
+			userId: user.id,
+		});
 
 		return ToolViewModel.toHTTP(tool);
 	}
@@ -78,8 +89,14 @@ export class ToolController {
 		description: 'A Tool has been successfully deleted.',
 	})
 	@Delete(':id')
-	public async deleteToolRoute(@Param('id') id: string): Promise<void> {
-		return this.deleteToolUseCase.exec({ id });
+	public async deleteToolRoute(
+		@AuthedUser() user: User,
+		@Param('id') id: string,
+	): Promise<void> {
+		return this.deleteToolUseCase.exec({
+			id,
+			userId: user.id,
+		});
 	}
 
 	@ApiOperation({
@@ -101,9 +118,13 @@ export class ToolController {
 	})
 	@Get()
 	public async listToolsRoute(
+		@AuthedUser() user: User,
 		@Query('tag') tag: string,
 	): Promise<ToolVMResponse[]> {
-		const { tools } = await this.listToolsUseCase.exec({ tag });
+		const { tools } = await this.listToolsUseCase.exec({
+			userId: user.id,
+			tag,
+		});
 
 		return tools.map(ToolViewModel.toHTTP);
 	}
