@@ -31,6 +31,9 @@ export class TypeORMUserRepository implements UserRepository {
 			where: {
 				email,
 			},
+			relations: {
+				tools: true,
+			},
 		});
 
 		if (!user) return null;
