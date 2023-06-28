@@ -46,7 +46,7 @@ export class TypeORMToolEntity {
 
 	@ManyToOne(() => TypeORMUserEntity, (user) => user.tools)
 	@JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-	user: TypeORMUserEntity;
+	user?: TypeORMUserEntity;
 
 	@CreateDateColumn()
 	createdAt: Date;
