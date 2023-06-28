@@ -3,35 +3,43 @@ import { Tool } from '@domain/entities/tool.entity';
 type FindToolBaseInput = {
 	userId: string;
 };
+type FindToolBaseOutput = Tool | null;
 
-export type FindToolByIdRepositoryInput = FindToolBaseInput & {
-	id: string;
-};
+export namespace FindToolByIdRepository {
+	export type Input = FindToolBaseInput & {
+		id: string;
+	};
+	export type Output = FindToolBaseOutput;
+}
 
-export type FindToolByLinkRepositoryInput = FindToolBaseInput & {
-	link: string;
-};
+export namespace FindToolByLinkRepository {
+	export type Input = FindToolBaseInput & {
+		link: string;
+	};
+	export type Output = FindToolBaseOutput;
+}
 
-export type FindToolByTitleRepositoryInput = FindToolBaseInput & {
-	title: string;
-};
-
-type FindByToolOutput = Tool | null;
+export namespace FindToolByTitleRepository {
+	export type Input = FindToolBaseInput & {
+		title: string;
+	};
+	export type Output = FindToolBaseOutput;
+}
 
 export abstract class FindToolByIdRepository {
 	public abstract findById: (
-		input: FindToolByIdRepositoryInput,
-	) => Promise<FindByToolOutput>;
+		input: FindToolByIdRepository.Input,
+	) => Promise<FindToolByIdRepository.Output>;
 }
 
 export abstract class FindToolByLinkRepository {
 	public abstract findByLink: (
-		input: FindToolByLinkRepositoryInput,
-	) => Promise<FindByToolOutput>;
+		input: FindToolByLinkRepository.Input,
+	) => Promise<FindToolByLinkRepository.Output>;
 }
 
 export abstract class FindToolByTitleRepository {
 	public abstract findByTitle: (
-		input: FindToolByTitleRepositoryInput,
-	) => Promise<FindByToolOutput>;
+		input: FindToolByTitleRepository.Input,
+	) => Promise<FindToolByTitleRepository.Output>;
 }

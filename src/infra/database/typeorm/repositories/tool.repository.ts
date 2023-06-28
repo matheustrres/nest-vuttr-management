@@ -8,13 +8,9 @@ import { TypeORMToolMapper } from '../mappers/tool.mapper';
 import {
 	CreateToolRepository,
 	DeleteToolRepository,
-	DeleteToolRepositoryInput,
 	FindToolByIdRepository,
-	FindToolByIdRepositoryInput,
 	FindToolByLinkRepository,
-	FindToolByLinkRepositoryInput,
 	FindToolByTitleRepository,
-	FindToolByTitleRepositoryInput,
 	ListToolsRepository,
 } from '@data/contracts/repositories/tool';
 
@@ -39,7 +35,9 @@ export class TypeORMToolRepository implements ToolRepository {
 		await this.repository.save(tool);
 	}
 
-	public async delete(input: DeleteToolRepositoryInput): Promise<void> {
+	public async delete(
+		input: DeleteToolRepository.Input,
+	): Promise<DeleteToolRepository.Output> {
 		await this.repository.delete({
 			id: input.id,
 			userId: input.userId,
@@ -47,8 +45,8 @@ export class TypeORMToolRepository implements ToolRepository {
 	}
 
 	public async findById(
-		input: FindToolByIdRepositoryInput,
-	): Promise<Tool | null> {
+		input: FindToolByIdRepository.Input,
+	): Promise<FindToolByIdRepository.Output> {
 		const tool = await this.repository.findOne({
 			where: {
 				id: input.id,
@@ -62,8 +60,8 @@ export class TypeORMToolRepository implements ToolRepository {
 	}
 
 	public async findByLink(
-		input: FindToolByLinkRepositoryInput,
-	): Promise<Tool | null> {
+		input: FindToolByLinkRepository.Input,
+	): Promise<FindToolByLinkRepository.Output> {
 		const tool = await this.repository.findOne({
 			where: {
 				link: input.link,
@@ -77,8 +75,8 @@ export class TypeORMToolRepository implements ToolRepository {
 	}
 
 	public async findByTitle(
-		input: FindToolByTitleRepositoryInput,
-	): Promise<Tool | null> {
+		input: FindToolByTitleRepository.Input,
+	): Promise<FindToolByTitleRepository.Output> {
 		const tool = await this.repository.findOne({
 			where: {
 				title: input.title,
@@ -91,10 +89,9 @@ export class TypeORMToolRepository implements ToolRepository {
 		return TypeORMToolMapper.toDomain(tool);
 	}
 
-	public async listTools(input: {
-		userId: string;
-		tag?: string | null;
-	}): Promise<Tool[]> {
+	public async listTools(
+		input: ListToolsRepository.Input,
+	): Promise<ListToolsRepository.Output> {
 		const tools = await this.repository.find({
 			where: {
 				userId: input.userId,
