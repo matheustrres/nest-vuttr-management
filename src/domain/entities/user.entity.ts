@@ -14,6 +14,6 @@ export class User extends BaseEntity {
 		this.name = props.name;
 		this.email = props.email;
 		this.password = props.password;
-		this.tools = props.tools;
+		this.tools = props.tools || [];
 	}
 }

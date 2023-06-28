@@ -32,7 +32,7 @@ export class TypeORMUserEntity {
 	password: string;
 
 	@OneToMany(() => TypeORMToolEntity, (tool) => tool.user)
-	tools?: TypeORMToolEntity[];
+	tools: TypeORMToolEntity[];
 
 	@CreateDateColumn()
 	createdAt: Date;

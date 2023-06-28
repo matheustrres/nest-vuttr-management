@@ -7,6 +7,7 @@ export const makeUser = (props: Partial<GetProps<User>> = {}): User => {
 		name: 'John Doe',
 		email: 'johndoe@gmail.com',
 		password: 'youshallnotpass',
+		tools: [],
 		...props,
 	});
 };
