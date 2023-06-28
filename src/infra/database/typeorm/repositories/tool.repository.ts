@@ -101,6 +101,6 @@ export class TypeORMToolRepository implements ToolRepository {
 			},
 		});
 
-		return tools.map(TypeORMToolMapper.toDomain);
+		return tools.map((t) => TypeORMToolMapper.toDomain(t));
 	}
 }

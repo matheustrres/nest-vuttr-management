@@ -1,5 +1,6 @@
 import { TypeORMUserEntity } from '../entities/user.entity';
 import { TypeORMBaseMapper } from './base.mapper';
+import { TypeORMToolMapper } from './tool.mapper';
 
 import { User } from '@domain/entities/user.entity';
 
@@ -12,11 +13,25 @@ export class TypeORMUserMapper implements TypeORMBaseMapper {
 
 	public static toDomain(persistence: TypeORMUserEntity): User {
 		return new User({
-			id: persistence.id,
-			name: persistence.name,
-			email: persistence.email,
-			password: persistence.password,
-			createdAt: persistence.createdAt,
+			...persistence,
+			tools: persistence.tools.map((t) => TypeORMToolMapper.toDomain(t)),
 		});
+	}
+
+	public static toPersistence(
+		domain: User,
+		relations?: {
+			tools?: boolean;
+		},
+	): TypeORMUserEntity {
+		const { tools, ...rest } = domain;
+
+		const user = rest as TypeORMUserEntity;
+
+		if (tools && relations?.tools) {
+			user.tools = tools.map((t) => TypeORMToolMapper.toPersistence(t));
+		}
+
+		return user;
 	}
 }
