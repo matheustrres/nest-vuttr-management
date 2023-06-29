@@ -30,6 +30,7 @@ import { User } from '@domain/entities/user.entity';
 
 import {
 	CreateToolResponse,
+	FindToolByIdResponse,
 	ListToolsResponse,
 } from '@infra/docs/responses/types/tool';
 import { AuthedUser } from '@infra/http/auth/decorators/authed-user.decorator';
@@ -101,8 +102,23 @@ export class ToolController {
 		});
 	}
 
+	@ApiOperation({
+		description: 'Find a tool by its ID.',
+	})
+	@ApiParam({
+		name: 'id',
+		description: 'The ID of the Tool to be found.',
+		required: true,
+	})
+	@ApiBadRequestResponse({
+		description: 'No Tool has been found with given ID.',
+	})
+	@ApiOkResponse({
+		description: 'A Tool has been successfully found.',
+		type: FindToolByIdResponse,
+	})
 	@Get(':id')
-	public async getToolRoute(
+	public async findToolRoute(
 		@AuthedUser() user: User,
 		@Param('id') id: string,
 	): Promise<ToolVMResponse> {
