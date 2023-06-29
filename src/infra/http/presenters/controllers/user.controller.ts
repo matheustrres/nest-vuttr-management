@@ -13,6 +13,7 @@ import {
 	ApiBadRequestResponse,
 	ApiBody,
 	ApiCreatedResponse,
+	ApiOkResponse,
 	ApiOperation,
 	ApiTags,
 } from '@nestjs/swagger';
@@ -29,7 +30,7 @@ import { JWTAuthGuard } from '@infra/http/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from '@infra/http/auth/guards/local-auth.guard';
 import { SessionAuthGuard } from '@infra/http/auth/guards/session-auth.guard';
 import { JWTTokenInterceptor } from '@infra/http/auth/interceptors/jwt-token.interceptor';
-import { CreateUserDto } from '@infra/http/dtos/user';
+import { CreateUserDto, LoginUserDto } from '@infra/http/dtos/user';
 
 @ApiTags('users')
 @Controller('users')
@@ -62,6 +63,20 @@ export class UserController {
 		return UserViewModel.toHTTP(user);
 	}
 
+	@ApiOperation({
+		description: 'Log in with User account and authenticate.',
+	})
+	@ApiBody({
+		description: 'Properties to authenticate a User account.',
+		type: LoginUserDto,
+		required: true,
+	})
+	@ApiBadRequestResponse({
+		description: 'Invalid credentials given.',
+	})
+	@ApiOkResponse({
+		description: 'User account successfully authenticated.',
+	})
 	@Post('login')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(LocalAuthGuard)
