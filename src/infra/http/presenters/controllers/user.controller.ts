@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
+	ApiBearerAuth,
 	ApiBody,
 	ApiCreatedResponse,
 	ApiOkResponse,
@@ -63,6 +64,7 @@ export class UserController {
 		return UserViewModel.toHTTP(user);
 	}
 
+	@ApiBearerAuth()
 	@ApiOperation({
 		description: 'Log in with User account and authenticate.',
 	})
