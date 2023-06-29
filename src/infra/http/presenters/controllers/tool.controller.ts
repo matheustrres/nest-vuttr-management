@@ -23,6 +23,7 @@ import { ToolVMResponse, ToolViewModel } from '../view-models/tool.view-model';
 
 import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
+import { FindToolByIdUseCase } from '@app/use-cases/tool/find-tool-by-id';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 
 import { User } from '@domain/entities/user.entity';
@@ -43,6 +44,7 @@ export class ToolController {
 	constructor(
 		private readonly createToolUseCase: CreateToolUseCase,
 		private readonly deleteToolUseCase: DeleteToolUseCase,
+		private readonly findToolUseCase: FindToolByIdUseCase,
 		private readonly listToolsUseCase: ListToolsUseCase,
 	) {}
 
@@ -97,6 +99,19 @@ export class ToolController {
 			id,
 			userId: user.id,
 		});
+	}
+
+	@Get(':id')
+	public async getToolRoute(
+		@AuthedUser() user: User,
+		@Param('id') id: string,
+	): Promise<ToolVMResponse> {
+		const { tool } = await this.findToolUseCase.exec({
+			id,
+			userId: user.id,
+		});
+
+		return ToolViewModel.toHTTP(tool);
 	}
 
 	@ApiOperation({

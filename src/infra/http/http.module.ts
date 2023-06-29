@@ -10,6 +10,7 @@ import { UserController } from './presenters/controllers/user.controller';
 // tool use-cases
 import { CreateToolUseCase } from '@app/use-cases/tool/create-tool';
 import { DeleteToolUseCase } from '@app/use-cases/tool/delete-tool';
+import { FindToolByIdUseCase } from '@app/use-cases/tool/find-tool-by-id';
 import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 // user use-cases
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
@@ -41,6 +42,7 @@ type CreateToolRepository = CreateToolRepositoryContract &
 	FindToolByTitleRepositoryContract;
 type DeleteToolRepository = DeleteToolRepositoryContract &
 	FindToolByIdRepositoryContract;
+type FindToolByIdRepository = FindToolByIdRepositoryContract;
 
 // user repositories contracts
 type CreateUserRepository = CreateUserRepositoryContract &
@@ -73,6 +75,13 @@ type FindUserRepository = FindUserByEmailRepositoryContract;
 			useFactory: (toolRepository: DeleteToolRepository): DeleteToolUseCase =>
 				new DeleteToolUseCase(toolRepository),
 			inject: [DeleteToolRepositoryContract, FindToolByIdRepositoryContract],
+		},
+		{
+			provide: FindToolByIdUseCase,
+			useFactory: (
+				toolRepository: FindToolByIdRepository,
+			): FindToolByIdUseCase => new FindToolByIdUseCase(toolRepository),
+			inject: [FindToolByIdRepositoryContract],
 		},
 		{
 			provide: ListToolsUseCase,
