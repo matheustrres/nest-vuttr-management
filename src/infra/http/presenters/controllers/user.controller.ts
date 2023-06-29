@@ -26,6 +26,7 @@ import { CreateUserUseCase } from '@app/use-cases/user/create-user';
 import { User } from '@domain/entities/user.entity';
 
 import { CreateUserResponse } from '@infra/docs/responses/types/user';
+import { MeResponse } from '@infra/docs/responses/types/user/me.response';
 import { AuthedUser } from '@infra/http/auth/decorators/authed-user.decorator';
 import { JWTAuthGuard } from '@infra/http/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from '@infra/http/auth/guards/local-auth.guard';
@@ -87,6 +88,18 @@ export class UserController {
 		return UserViewModel.toHTTP(user);
 	}
 
+	@ApiBearerAuth()
+	@ApiOperation({
+		description: 'Get User account details.',
+	})
+	@ApiBadRequestResponse({
+		description:
+			'No authorization token has been entered in the authorization header.',
+	})
+	@ApiOkResponse({
+		description: 'User account details retrieved.',
+		type: MeResponse,
+	})
 	@Get('me')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(SessionAuthGuard, JWTAuthGuard)
