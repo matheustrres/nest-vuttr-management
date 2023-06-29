@@ -18,8 +18,8 @@ A simple application to manage tools with their respective names, links, descrip
 First clone the project on your computer and enter the created directory: 
 
 ```bash
-  git clone https://github.com/matheustrres/nest-vuttr-management.git
-  cd nest-vuttr-management
+git clone https://github.com/matheustrres/nest-vuttr-management.git
+cd nest-vuttr-management
 ```
 
 Install the application dependencies
@@ -33,11 +33,11 @@ Set the environment variables correctly in the .env file
 ```env
 NODE_ENV=
 
-PG_DATABASE=
-PG_PASSWORD=
+PG_DATABASE=vuttr_db
+PG_PASSWORD=postgres
 PG_PORT=5432
-PG_HOST=
-PG_USERNAME=
+PG_HOST=localhost
+PG_USERNAME=postgres
 ```
 
 Initialize the database service with docker
@@ -54,7 +54,7 @@ npm run start
 
 ## 🚩 API Documentation
 
-To view the API documentation with OpenAPI Swagger, after you have started the server properly with `npm run start:dev`, go to **http://localhost:3002/api** to check it out.
+To view the API documentation with OpenAPI Swagger, after you have started the server properly with `npm run start:dev`, go to **http://localhost:3000/api** to check it out.
 
 ## 🎲 Features
 
@@ -63,9 +63,10 @@ To view the API documentation with OpenAPI Swagger, after you have started the s
     - [x]  Deletion
     - [x]  Listing
     - [ ]  Updating 
-    - [ ]  Search by id/title
+    - [x]  Search by id
 
 - User
-    - [ ]  Creation
+    - [x]  Creation
+    - [x]  Authentication
     - [ ]  Deletion
     - [ ]  Updating
