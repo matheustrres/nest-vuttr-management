@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
+	ApiBearerAuth,
 	ApiBody,
 	ApiCreatedResponse,
 	ApiHeader,
@@ -39,6 +40,7 @@ import { SessionAuthGuard } from '@infra/http/auth/guards/session-auth.guard';
 import { CreateToolDto } from '@infra/http/dtos/tool';
 
 @ApiTags('tools')
+@ApiBearerAuth()
 @Controller('tools')
 @UseGuards(SessionAuthGuard, JWTAuthGuard)
 export class ToolController {
