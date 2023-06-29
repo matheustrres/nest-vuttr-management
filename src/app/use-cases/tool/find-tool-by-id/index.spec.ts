@@ -4,6 +4,8 @@ import { FindToolByIdRepository } from '@data/contracts/repositories/tool';
 
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 
+import { makeTool } from '@tests/factories/entities/tool.factory';
+
 import { FindToolByIdUseCase } from '.';
 
 describe('FindToolById [use case]', (): void => {
@@ -13,7 +15,13 @@ describe('FindToolById [use case]', (): void => {
 	beforeAll((): void => {
 		toolRepository = mock();
 
-		toolRepository.findById.mockResolvedValueOnce(null);
+		toolRepository.findById.mockResolvedValueOnce(null).mockResolvedValueOnce(
+			makeTool({
+				id: 'random_tool_id',
+				title: 'random_tool_title',
+				userId: 'random_user_id',
+			}),
+		);
 	});
 
 	beforeEach((): void => {
@@ -34,5 +42,22 @@ describe('FindToolById [use case]', (): void => {
 			id: 'fake_tool_id',
 			userId: 'fake_user_id',
 		});
+	});
+
+	it('should return a tool', async (): Promise<void> => {
+		const { tool } = await sut.exec({
+			id: 'random_tool_id',
+			userId: 'random_user_id',
+		});
+
+		expect(toolRepository.findById).toHaveBeenNthCalledWith(2, {
+			id: 'random_tool_id',
+			userId: 'random_user_id',
+		});
+
+		expect(tool.id).toBeDefined();
+		expect(tool.id).toBe('random_tool_id');
+		expect(tool.title).toBe('random_tool_title');
+		expect(tool.userId).toBe('random_user_id');
 	});
 });
