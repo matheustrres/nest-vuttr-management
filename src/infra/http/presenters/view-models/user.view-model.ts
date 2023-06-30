@@ -19,10 +19,10 @@ export class UserViewModel implements BaseViewModel {
 			id: model.id,
 			name: model.name,
 			email: model.email,
-			createdAt: model.createdAt,
 			...(showTools && {
 				tools: model.tools!.map(ToolViewModel.toHTTP),
 			}),
+			createdAt: model.createdAt,
 		};
 	}
 }
