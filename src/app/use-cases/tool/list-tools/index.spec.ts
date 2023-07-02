@@ -68,12 +68,17 @@ describe('ListTools [use case]', (): void => {
 		}),
 	];
 
+	const tag = 'node';
+
 	beforeAll((): void => {
 		toolRepository = mock();
 
 		toolRepository.listTools
 			.mockResolvedValueOnce([])
-			.mockResolvedValueOnce(toolsArray);
+			.mockResolvedValueOnce(toolsArray)
+			.mockResolvedValueOnce(
+				toolsArray.filter((tool): boolean => tool.tags.includes(tag)),
+			);
 	});
 
 	beforeEach((): void => {
@@ -105,5 +110,23 @@ describe('ListTools [use case]', (): void => {
 
 		expect(data.length).toBe(toolsArray.length);
 		expect(data).toEqual(toolsArray);
+	});
+
+	it('should list all registered tools with specific tag', async (): Promise<void> => {
+		const { tools: data } = await sut.exec({
+			tag,
+			userId: 'random_user_id',
+		});
+
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, {
+			tag,
+			userId: 'random_user_id',
+		});
+
+		expect(data.length).toBe(4);
+		expect(data[0].title).toBe('Fastify');
+		expect(data[1].title).toBe('Prisma');
+		expect(data[2].title).toBe('NestJS');
+		expect(data[3].title).toBe('Express');
 	});
 });
