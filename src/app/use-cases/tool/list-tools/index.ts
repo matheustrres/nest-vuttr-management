@@ -15,8 +15,10 @@ export class ListToolsUseCase implements IListToolsUseCase {
 
 	public async exec(request: IListToolsRequest): Promise<IListToolsResponse> {
 		const tools: Tool[] = await this.toolRepository.listTools({
-			tag: request?.tag,
 			userId: request.userId,
+			tag: request.tag,
+			skip: request.skip,
+			take: request.take,
 		});
 
 		if (!tools.length) {

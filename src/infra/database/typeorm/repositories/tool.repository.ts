@@ -99,6 +99,8 @@ export class TypeORMToolRepository implements ToolRepository {
 					tags: ArrayContains([input.tag]),
 				}),
 			},
+			skip: input.skip,
+			take: input.take,
 		});
 
 		return tools.map((t) => TypeORMToolMapper.toDomain(t));

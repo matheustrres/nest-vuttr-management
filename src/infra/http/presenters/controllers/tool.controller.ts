@@ -38,6 +38,7 @@ import { AuthedUser } from '@infra/http/auth/decorators/authed-user.decorator';
 import { JWTAuthGuard } from '@infra/http/auth/guards/jwt-auth.guard';
 import { SessionAuthGuard } from '@infra/http/auth/guards/session-auth.guard';
 import { CreateToolDto } from '@infra/http/dtos/tool';
+import { paginate } from '@infra/http/utils/paginate.util';
 
 @ApiTags('tools')
 @ApiBearerAuth()
@@ -152,11 +153,17 @@ export class ToolController {
 	@Get()
 	public async listToolsRoute(
 		@AuthedUser() user: User,
-		@Query('tag') tag: string,
+		@Query('tag') tag?: string,
+		@Query('skip') skip?: number,
+		@Query('take') take?: number,
 	): Promise<ToolVMResponse[]> {
+		const pgt = paginate({ skip, take });
+
 		const { tools } = await this.listToolsUseCase.exec({
 			userId: user.id,
 			tag,
+			skip: pgt.skip,
+			take: pgt.take,
 		});
 
 		return tools.map(ToolViewModel.toHTTP);

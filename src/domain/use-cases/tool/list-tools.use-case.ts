@@ -2,7 +2,9 @@ import { Tool } from '@domain/entities/tool.entity';
 
 export type IListToolsRequest = {
 	userId: string;
-	tag?: string | null;
+	tag?: string;
+	skip?: number;
+	take?: number;
 };
 
 export type IListToolsResponse = {

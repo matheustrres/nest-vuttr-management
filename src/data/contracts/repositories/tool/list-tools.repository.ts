@@ -4,6 +4,8 @@ export namespace ListToolsRepository {
 	export type Input = {
 		userId: string;
 		tag?: string | null;
+		skip?: number;
+		take?: number;
 	};
 	export type Output = Tool[];
 }
