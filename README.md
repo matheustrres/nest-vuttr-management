@@ -61,12 +61,10 @@ To view the API documentation with OpenAPI Swagger, after you have started the s
 - Tool
     - [x]  Creation
     - [x]  Deletion
-    - [x]  Listing
-    - [ ]  Updating 
+    - [x]  Listing with pagination
     - [x]  Search by id
 
 - User
     - [x]  Creation
     - [x]  Authentication
-    - [ ]  Deletion
     - [ ]  Updating
