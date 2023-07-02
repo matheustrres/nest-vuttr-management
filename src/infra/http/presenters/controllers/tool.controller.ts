@@ -13,11 +13,12 @@ import {
 	ApiBearerAuth,
 	ApiBody,
 	ApiCreatedResponse,
-	ApiHeader,
 	ApiOkResponse,
 	ApiOperation,
 	ApiParam,
+	ApiQuery,
 	ApiTags,
+	ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { ToolVMResponse, ToolViewModel } from '../view-models/tool.view-model';
@@ -60,6 +61,10 @@ export class ToolController {
 		type: CreateToolDto,
 		required: true,
 	})
+	@ApiUnauthorizedResponse({
+		description:
+			'No authentication token or an invalid token has been entered in the authentication header.',
+	})
 	@ApiBadRequestResponse({
 		description: 'A Tool has already been registered with given title or link.',
 	})
@@ -88,10 +93,14 @@ export class ToolController {
 		description: 'The ID of the Tool to be deleted.',
 		required: true,
 	})
+	@ApiUnauthorizedResponse({
+		description:
+			'No authentication token or an invalid token has been entered in the authentication header.',
+	})
 	@ApiBadRequestResponse({
 		description: 'No Tool has been found with given ID.',
 	})
-	@ApiCreatedResponse({
+	@ApiOkResponse({
 		description: 'A Tool has been successfully deleted.',
 	})
 	@Delete(':id')
@@ -112,6 +121,10 @@ export class ToolController {
 		name: 'id',
 		description: 'The ID of the Tool to be found.',
 		required: true,
+	})
+	@ApiUnauthorizedResponse({
+		description:
+			'No authentication token or an invalid token has been entered in the authentication header.',
 	})
 	@ApiBadRequestResponse({
 		description: 'No Tool has been found with given ID.',
@@ -136,11 +149,27 @@ export class ToolController {
 	@ApiOperation({
 		description: 'List all registered Tools.',
 	})
-	@ApiHeader({
+	@ApiQuery({
 		name: 'tag',
 		description: 'List only tools that contain this tag.',
 		required: false,
 		example: 'organization',
+	})
+	@ApiQuery({
+		name: 'skip',
+		description: 'Offset where from entities should be taken.',
+		required: false,
+		example: '2',
+	})
+	@ApiQuery({
+		name: 'take',
+		description: 'Max number of entities should be taken.',
+		required: false,
+		example: '1',
+	})
+	@ApiUnauthorizedResponse({
+		description:
+			'No authentication token or an invalid token has been entered in the authentication header.',
 	})
 	@ApiBadRequestResponse({
 		description: 'No Tool records were found in the database.',

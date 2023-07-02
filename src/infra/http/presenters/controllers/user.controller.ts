@@ -5,7 +5,6 @@ import {
 	HttpCode,
 	HttpStatus,
 	Post,
-	Req,
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +16,7 @@ import {
 	ApiOkResponse,
 	ApiOperation,
 	ApiTags,
+	ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { UserVMResponse, UserViewModel } from '../view-models/user.view-model';
@@ -92,9 +92,9 @@ export class UserController {
 	@ApiOperation({
 		description: 'Get User account details.',
 	})
-	@ApiBadRequestResponse({
+	@ApiUnauthorizedResponse({
 		description:
-			'No authorization token has been entered in the authorization header.',
+			'No authentication token or an invalid token has been entered in the authentication header.',
 	})
 	@ApiOkResponse({
 		description: 'User account details retrieved.',
