@@ -13,16 +13,20 @@ export type UserVMResponse = {
 
 export class UserViewModel implements BaseViewModel {
 	public static toHTTP(model: User, loadTools = false): UserVMResponse {
-		const showTools = model.tools?.length && loadTools;
-
-		return {
+		const common = {
 			id: model.id,
 			name: model.name,
 			email: model.email,
-			...(showTools && {
-				tools: model.tools!.map(ToolViewModel.toHTTP),
-			}),
 			createdAt: model.createdAt,
 		};
+
+		if (model.tools?.length && loadTools) {
+			return {
+				...common,
+				tools: model.tools.map(ToolViewModel.toHTTP),
+			};
+		}
+
+		return common;
 	}
 }
