@@ -69,6 +69,8 @@ describe('ListTools [use case]', (): void => {
 	];
 
 	const tag = 'node';
+	const skip = 2;
+	const take = 5;
 
 	beforeAll((): void => {
 		toolRepository = mock();
@@ -78,6 +80,11 @@ describe('ListTools [use case]', (): void => {
 			.mockResolvedValueOnce(toolsArray)
 			.mockResolvedValueOnce(
 				toolsArray.filter((tool): boolean => tool.tags.includes(tag)),
+			)
+			.mockResolvedValueOnce(
+				toolsArray
+					.slice(skip, skip + take)
+					.filter((tool): boolean => tool.tags.includes(tag)),
 			);
 	});
 
@@ -128,5 +135,26 @@ describe('ListTools [use case]', (): void => {
 		expect(data[1].title).toBe('Prisma');
 		expect(data[2].title).toBe('NestJS');
 		expect(data[3].title).toBe('Express');
+	});
+
+	it('should list all registered tools with specific tag and paginated', async (): Promise<void> => {
+		const { tools: data } = await sut.exec({
+			userId: 'random_user_id',
+			tag: 'node',
+			take,
+			skip,
+		});
+
+		expect(toolRepository.listTools).toHaveBeenNthCalledWith(4, {
+			userId: 'random_user_id',
+			tag: 'node',
+			take,
+			skip,
+		});
+
+		expect(data.length).toBe(3);
+		expect(data[0].title).toBe('Prisma');
+		expect(data[1].title).toBe('NestJS');
+		expect(data[2].title).toBe('Express');
 	});
 });
