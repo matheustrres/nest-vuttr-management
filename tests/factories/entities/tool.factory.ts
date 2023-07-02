@@ -7,11 +7,10 @@ export const makeTool = (props: Partial<GetProps<Tool>> = {}): Tool => {
 	const user = makeUser();
 
 	return new Tool({
-		title: 'Github',
-		description:
-			'Where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories...',
-		link: 'https://github.com/',
-		tags: ['github', 'coding', 'developers', 'open-source', 'community'],
+		title: 'Random Tool Title',
+		description: 'Random Tool Description',
+		link: 'Random Tool Link',
+		tags: ['web', 'http', 'http2', 'community'],
 		userId: user.id,
 		...props,
 	});
