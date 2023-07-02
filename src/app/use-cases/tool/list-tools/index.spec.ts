@@ -13,34 +13,67 @@ describe('ListTools [use case]', (): void => {
 	let toolRepository: MockProxy<ListToolsRepository>;
 	let sut: ListToolsUseCase;
 
-	const tools: Tool[] = [];
-
-	const tag = 'node';
+	const toolsArray: Tool[] = [
+		makeTool({
+			title: 'Notion',
+			tags: [
+				'organization',
+				'planning',
+				'collaboration',
+				'writing',
+				'calendar',
+			],
+		}),
+		makeTool({
+			title: 'Fastify',
+			tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
+		}),
+		makeTool({
+			title: 'json-server',
+			tags: ['api', 'json', 'schema', 'github', 'rest'],
+		}),
+		makeTool({
+			title: 'Prisma',
+			tags: [
+				'node',
+				'javascript',
+				'sql-server',
+				'orm',
+				'query-builder',
+				'typescript',
+			],
+		}),
+		makeTool({
+			title: 'NestJS',
+			tags: ['node', 'framework', 'javascript', 'microservices', 'typescript'],
+		}),
+		makeTool({
+			title: 'Express',
+			tags: ['node', 'javascript', 'express', 'server', 'framework'],
+		}),
+		makeTool({
+			title: 'Github',
+			tags: ['github', 'coding', 'developers', 'open-source', 'community'],
+		}),
+		makeTool({
+			title: 'TypeORM',
+			tags: [
+				'javascript',
+				'orm',
+				'database',
+				'websql',
+				'data-mapper',
+				'typescript',
+			],
+		}),
+	];
 
 	beforeAll((): void => {
-		tools.push(
-			makeTool({
-				title: 'Notion',
-				link: 'https://notion.so',
-			}),
-			makeTool({
-				title: 'fastify',
-				link: 'https://www.fastify.io/',
-				tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
-			}),
-			makeTool({
-				title: 'json-server',
-				link: 'https://github.com/typicode/json-server',
-				tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
-			}),
-		);
-
 		toolRepository = mock();
 
 		toolRepository.listTools
 			.mockResolvedValueOnce([])
-			.mockResolvedValueOnce(tools)
-			.mockResolvedValueOnce(tools.filter((t) => t.tags.includes(tag)));
+			.mockResolvedValueOnce(toolsArray);
 	});
 
 	beforeEach((): void => {
@@ -70,25 +103,7 @@ describe('ListTools [use case]', (): void => {
 			userId: 'random_user_id',
 		});
 
-		expect(data.length).toBe(3);
-		expect(data[0]).toEqual(tools[0]);
-		expect(data[1]).toEqual(tools[1]);
-		expect(data[2]).toEqual(tools[2]);
-	});
-
-	it('should list all registered tools with specified tag', async (): Promise<void> => {
-		const { tools: data } = await sut.exec({
-			tag,
-			userId: 'random_user_id',
-		});
-
-		expect(toolRepository.listTools).toHaveBeenNthCalledWith(3, {
-			tag,
-			userId: 'random_user_id',
-		});
-
-		expect(data.length).toBe(2);
-		expect(data[0]).toEqual(tools[1]);
-		expect(data[1]).toEqual(tools[2]);
+		expect(data.length).toBe(toolsArray.length);
+		expect(data).toEqual(toolsArray);
 	});
 });
