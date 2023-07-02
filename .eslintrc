@@ -40,7 +40,7 @@
       "warn",
       {
         "anonymous": "never",
-        "named": "always",
+        "named": "never",
         "asyncArrow": "always"
       }
     ],
