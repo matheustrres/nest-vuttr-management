@@ -29,13 +29,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		}
 
 		if (exception instanceof HttpException) {
-			const { statusMessage: message, statusCode } =
-				exception.getResponse() as Request;
+			const code = exception.getStatus();
 
-			const code = statusCode || 400;
-
-			return response.status(400).json({
-				message,
+			return response.status(code).json({
+				message: exception.message,
 				code,
 				timestamp: new Date().toISOString(),
 				endpoint: request.path,
