@@ -1,5 +1,9 @@
+import { BaseUseCase } from '@app/use-cases/base.use-case';
+
+import { GetCacheKey, SetCacheKey } from '@data/contracts/cache';
 import { FindToolByIdRepository } from '@data/contracts/repositories/tool';
 
+import { Tool } from '@domain/entities/tool.entity';
 import { ToolNotFoundError } from '@domain/errors/tool/tool-not-found.error';
 import {
 	IFindToolByIdRequest,
@@ -7,14 +11,36 @@ import {
 	IFindToolByIdUseCase,
 } from '@domain/use-cases/tool/find-tool-by-id.use-case';
 
+type CacheManager = GetCacheKey & SetCacheKey;
 type ToolRepository = FindToolByIdRepository;
 
-export class FindToolByIdUseCase implements IFindToolByIdUseCase {
-	constructor(private toolRepository: ToolRepository) {}
+export class FindToolByIdUseCase
+	extends BaseUseCase
+	implements IFindToolByIdUseCase
+{
+	constructor(
+		private cacheManager: CacheManager,
+		private toolRepository: ToolRepository,
+	) {
+		super();
+	}
 
 	public async exec(
 		request: IFindToolByIdRequest,
 	): Promise<IFindToolByIdResponse> {
+		const cachedTool = await this.cacheManager.get<Tool>(
+			this.getCacheKey({
+				toolId: request.id,
+				userId: request.userId,
+			}),
+		);
+
+		if (cachedTool) {
+			return {
+				tool: cachedTool,
+			};
+		}
+
 		const tool = await this.toolRepository.findById({
 			id: request.id,
 			userId: request.userId,
@@ -26,8 +52,25 @@ export class FindToolByIdUseCase implements IFindToolByIdUseCase {
 			);
 		}
 
+		await this.cacheManager.set<Tool>(
+			this.getCacheKey({
+				toolId: request.id,
+				userId: request.userId,
+			}),
+			tool,
+		);
+
 		return {
 			tool,
 		};
 	}
+
+	protected getCacheKey(input: GetCacheKeyInput): string {
+		return `--vuttr/users:${input.userId}/tools:${input.toolId}`;
+	}
 }
+
+type GetCacheKeyInput = {
+	userId: string;
+	toolId: string;
+};
