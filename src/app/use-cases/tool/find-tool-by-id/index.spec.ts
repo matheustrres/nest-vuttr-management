@@ -63,6 +63,7 @@ describe('FindToolById [use case]', (): void => {
 			id: 'fake_tool_id',
 			userId: 'fake_user_id',
 		});
+		expect(cacheManager.set).not.toHaveBeenCalled();
 	});
 
 	it('should return a tool', async (): Promise<void> => {
