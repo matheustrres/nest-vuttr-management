@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { SessionSerializer } from './auth/session.serializer';
-import { JWTStrategy } from './auth/strategies/jwt.strategy';
 import { LocalStrategy } from './auth/strategies/local.strategy';
 import { ToolController } from './presenters/controllers/tool.controller';
 import { UserController } from './presenters/controllers/user.controller';
@@ -19,35 +19,36 @@ import { LoginUserUseCase } from '@app/use-cases/user/login-user';
 import { HashString, CompareStrings } from '@data/contracts/hash';
 // tool repositories
 import {
-	CreateToolRepository as CreateToolRepositoryContract,
-	DeleteToolRepository as DeleteToolRepositoryContract,
-	FindToolByIdRepository as FindToolByIdRepositoryContract,
-	FindToolByLinkRepository as FindToolByLinkRepositoryContract,
-	FindToolByTitleRepository as FindToolByTitleRepositoryContract,
-	ListToolsRepository as ListToolsRepositoryContract,
+	CreateToolRepository,
+	DeleteToolRepository,
+	FindToolByIdRepository,
+	FindToolByLinkRepository,
+	FindToolByTitleRepository,
+	ListToolsRepository as ListToolsRepository,
 } from '@data/contracts/repositories/tool';
 
 // user repositories
 import {
-	CreateUserRepository as CreateUserRepositoryContract,
-	FindUserByEmailRepository as FindUserByEmailRepositoryContract,
+	CreateUserRepository,
+	FindUserByEmailRepository,
 } from '@data/contracts/repositories/user';
 
 import { DatabaseModule } from '@infra/database/database.module';
 import { HashModule } from '@infra/providers/hash/hash.module';
 
 // tool repositories contracts
-type CreateToolRepository = CreateToolRepositoryContract &
-	FindToolByLinkRepositoryContract &
-	FindToolByTitleRepositoryContract;
-type DeleteToolRepository = DeleteToolRepositoryContract &
-	FindToolByIdRepositoryContract;
-type FindToolByIdRepository = FindToolByIdRepositoryContract;
+type CreateToolUseCaseRepository = CreateToolRepository &
+	FindToolByLinkRepository &
+	FindToolByTitleRepository;
+type DeleteToolUseCaseRepository = DeleteToolRepository &
+	FindToolByIdRepository;
+type FindToolByIdUseCaseRepository = FindToolByIdRepository;
+type ListToolsUseCaseRepository = ListToolsRepository;
 
 // user repositories contracts
-type CreateUserRepository = CreateUserRepositoryContract &
-	FindUserByEmailRepositoryContract;
-type FindUserRepository = FindUserByEmailRepositoryContract;
+type CreateUserUseCaseRepository = CreateUserRepository &
+	FindUserByEmailRepository;
+type LoginUserUseCaseRepository = FindUserByEmailRepository;
 
 @Module({
 	imports: [
@@ -57,58 +58,71 @@ type FindUserRepository = FindUserByEmailRepositoryContract;
 			defaultStrategy: 'jwt',
 			session: true,
 		}),
+		JwtModule.register({
+			secret: process.env.JWT_SECRET_KEY as string,
+			signOptions: {
+				algorithm: 'HS384',
+				expiresIn: '12h',
+			},
+			verifyOptions: {
+				algorithms: ['HS384'],
+				ignoreExpiration: false,
+			},
+		}),
 	],
 	providers: [
 		// tool-related
 		{
 			provide: CreateToolUseCase,
-			useFactory: (toolRepository: CreateToolRepository): CreateToolUseCase =>
-				new CreateToolUseCase(toolRepository),
+			useFactory: (
+				toolRepository: CreateToolUseCaseRepository,
+			): CreateToolUseCase => new CreateToolUseCase(toolRepository),
 			inject: [
-				CreateToolRepositoryContract,
-				FindToolByLinkRepositoryContract,
-				FindToolByTitleRepositoryContract,
+				CreateToolRepository,
+				FindToolByLinkRepository,
+				FindToolByTitleRepository,
 			],
 		},
 		{
 			provide: DeleteToolUseCase,
-			useFactory: (toolRepository: DeleteToolRepository): DeleteToolUseCase =>
-				new DeleteToolUseCase(toolRepository),
-			inject: [DeleteToolRepositoryContract, FindToolByIdRepositoryContract],
+			useFactory: (
+				toolRepository: DeleteToolUseCaseRepository,
+			): DeleteToolUseCase => new DeleteToolUseCase(toolRepository),
+			inject: [DeleteToolRepository, FindToolByIdRepository],
 		},
 		{
 			provide: FindToolByIdUseCase,
 			useFactory: (
-				toolRepository: FindToolByIdRepository,
+				toolRepository: FindToolByIdUseCaseRepository,
 			): FindToolByIdUseCase => new FindToolByIdUseCase(toolRepository),
-			inject: [FindToolByIdRepositoryContract],
+			inject: [FindToolByIdRepository],
 		},
 		{
 			provide: ListToolsUseCase,
 			useFactory: (
-				toolRepository: ListToolsRepositoryContract,
+				toolRepository: ListToolsUseCaseRepository,
 			): ListToolsUseCase => new ListToolsUseCase(toolRepository),
-			inject: [ListToolsRepositoryContract],
+			inject: [ListToolsRepository],
 		},
 		// user-related
-		{
-			provide: LoginUserUseCase,
-			useFactory: (
-				hasher: CompareStrings,
-				userRepository: FindUserRepository,
-			): LoginUserUseCase => new LoginUserUseCase(hasher, userRepository),
-			inject: [CompareStrings, FindUserByEmailRepositoryContract],
-		},
 		{
 			provide: CreateUserUseCase,
 			useFactory: (
 				hasher: HashString,
-				userRepository: CreateUserRepository,
+				userRepository: CreateUserUseCaseRepository,
 			): CreateUserUseCase => new CreateUserUseCase(hasher, userRepository),
-			inject: [HashString, CreateUserRepositoryContract],
+			inject: [HashString, CreateUserRepository],
+		},
+		{
+			provide: LoginUserUseCase,
+			useFactory: (
+				hasher: CompareStrings,
+				userRepository: LoginUserUseCaseRepository,
+			): LoginUserUseCase => new LoginUserUseCase(hasher, userRepository),
+			inject: [CompareStrings, FindUserByEmailRepository],
 		},
 		LocalStrategy,
-		JWTStrategy,
+		// JWTStrategy,
 		SessionSerializer,
 	],
 	controllers: [ToolController, UserController],
