@@ -28,12 +28,12 @@ export class FindToolByIdUseCase
 	public async exec(
 		request: IFindToolByIdRequest,
 	): Promise<IFindToolByIdResponse> {
-		const cachedTool = await this.cacheManager.get<Tool>(
-			this.getCacheKey({
-				toolId: request.id,
-				userId: request.userId,
-			}),
-		);
+		const key = this.getCacheKey({
+			toolId: request.id,
+			userId: request.userId,
+		});
+
+		const cachedTool = await this.cacheManager.get<Tool>(key);
 
 		if (cachedTool) {
 			return {
@@ -52,13 +52,7 @@ export class FindToolByIdUseCase
 			);
 		}
 
-		await this.cacheManager.set<Tool>(
-			this.getCacheKey({
-				toolId: request.id,
-				userId: request.userId,
-			}),
-			tool,
-		);
+		await this.cacheManager.set<Tool>(key, tool);
 
 		return {
 			tool,
