@@ -16,6 +16,11 @@ import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
 import { LoginUserUseCase } from '@app/use-cases/user/login-user';
 
+import {
+	DeleteCacheKey,
+	GetCacheKey,
+	SetCacheKey,
+} from '@data/contracts/cache';
 import { HashString, CompareStrings } from '@data/contracts/hash';
 // tool repositories
 import {
@@ -33,8 +38,14 @@ import {
 	FindUserByEmailRepository,
 } from '@data/contracts/repositories/user';
 
+import { VUTTRCacheModule } from '@infra/cache/cache.module';
 import { DatabaseModule } from '@infra/database/database.module';
 import { HashModule } from '@infra/providers/hash/hash.module';
+
+// tool cache contracts
+type CreateToolUseCaseCacheManager = SetCacheKey;
+type DeleteToolUseCaseCacheManager = GetCacheKey & DeleteCacheKey;
+type FindToolByIdUseCaseCacheManager = GetCacheKey & SetCacheKey;
 
 // tool repositories contracts
 type CreateToolUseCaseRepository = CreateToolRepository &
@@ -53,6 +64,7 @@ type LoginUserUseCaseRepository = FindUserByEmailRepository;
 @Module({
 	imports: [
 		DatabaseModule,
+		VUTTRCacheModule,
 		HashModule,
 		PassportModule.register({
 			defaultStrategy: 'jwt',
@@ -75,9 +87,12 @@ type LoginUserUseCaseRepository = FindUserByEmailRepository;
 		{
 			provide: CreateToolUseCase,
 			useFactory: (
+				cacheManager: CreateToolUseCaseCacheManager,
 				toolRepository: CreateToolUseCaseRepository,
-			): CreateToolUseCase => new CreateToolUseCase(toolRepository),
+			): CreateToolUseCase =>
+				new CreateToolUseCase(cacheManager, toolRepository),
 			inject: [
+				SetCacheKey,
 				CreateToolRepository,
 				FindToolByLinkRepository,
 				FindToolByTitleRepository,
@@ -86,16 +101,20 @@ type LoginUserUseCaseRepository = FindUserByEmailRepository;
 		{
 			provide: DeleteToolUseCase,
 			useFactory: (
+				cacheManager: DeleteToolUseCaseCacheManager,
 				toolRepository: DeleteToolUseCaseRepository,
-			): DeleteToolUseCase => new DeleteToolUseCase(toolRepository),
-			inject: [DeleteToolRepository, FindToolByIdRepository],
+			): DeleteToolUseCase =>
+				new DeleteToolUseCase(cacheManager, toolRepository),
+			inject: [DeleteCacheKey, DeleteToolRepository, FindToolByIdRepository],
 		},
 		{
 			provide: FindToolByIdUseCase,
 			useFactory: (
+				cacheManager: FindToolByIdUseCaseCacheManager,
 				toolRepository: FindToolByIdUseCaseRepository,
-			): FindToolByIdUseCase => new FindToolByIdUseCase(toolRepository),
-			inject: [FindToolByIdRepository],
+			): FindToolByIdUseCase =>
+				new FindToolByIdUseCase(cacheManager, toolRepository),
+			inject: [GetCacheKey, FindToolByIdRepository],
 		},
 		{
 			provide: ListToolsUseCase,
@@ -122,7 +141,6 @@ type LoginUserUseCaseRepository = FindUserByEmailRepository;
 			inject: [CompareStrings, FindUserByEmailRepository],
 		},
 		LocalStrategy,
-		// JWTStrategy,
 		SessionSerializer,
 	],
 	controllers: [ToolController, UserController],
