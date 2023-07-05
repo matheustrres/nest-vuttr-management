@@ -1,3 +1,6 @@
+import { BaseUseCase } from '@app/use-cases/base.use-case';
+
+import { SetCacheKey } from '@data/contracts/cache';
 import {
 	CreateToolRepository,
 	FindToolByLinkRepository,
@@ -12,12 +15,21 @@ import {
 	ICreateToolUseCase,
 } from '@domain/use-cases/tool/create-tool.use-case';
 
+type CacheManager = SetCacheKey;
 type ToolRepository = CreateToolRepository &
 	FindToolByLinkRepository &
 	FindToolByTitleRepository;
 
-export class CreateToolUseCase implements ICreateToolUseCase {
-	constructor(private toolRepository: ToolRepository) {}
+export class CreateToolUseCase
+	extends BaseUseCase
+	implements ICreateToolUseCase
+{
+	constructor(
+		private cacheManager: CacheManager,
+		private toolRepository: ToolRepository,
+	) {
+		super();
+	}
 
 	public async exec(request: ICreateToolRequest): Promise<ICreateToolResponse> {
 		const toolFoundByTitle = await this.toolRepository.findByTitle({
@@ -44,10 +56,27 @@ export class CreateToolUseCase implements ICreateToolUseCase {
 
 		const tool = new Tool(request);
 
+		await this.cacheManager.set<Tool>(
+			this.getCacheKey({
+				toolId: tool.id,
+				userId: request.userId,
+			}),
+			tool,
+		);
+
 		await this.toolRepository.create(tool);
 
 		return {
 			tool,
 		};
 	}
+
+	protected getCacheKey(input: GetCacheKeyInput): string {
+		return `--vuttr/users:${input.userId}/tools:${input.toolId}`;
+	}
 }
+
+type GetCacheKeyInput = {
+	userId: string;
+	toolId: string;
+};
