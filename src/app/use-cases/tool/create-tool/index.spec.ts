@@ -1,5 +1,6 @@
 import { MockProxy, mock } from 'jest-mock-extended';
 
+import { SetCacheKey } from '@data/contracts/cache';
 import {
 	CreateToolRepository,
 	FindToolByLinkRepository,
@@ -13,12 +14,15 @@ import { makeTool } from '@tests/factories/entities/tool.factory';
 import { CreateToolUseCase } from '.';
 
 describe('CreateTool [use case]', (): void => {
+	let cacheManager: MockProxy<SetCacheKey>;
 	let toolRepository: MockProxy<
 		CreateToolRepository & FindToolByLinkRepository & FindToolByTitleRepository
 	>;
+
 	let sut: CreateToolUseCase;
 
 	beforeAll((): void => {
+		cacheManager = mock();
 		toolRepository = mock();
 
 		toolRepository.findByTitle
@@ -40,7 +44,7 @@ describe('CreateTool [use case]', (): void => {
 	});
 
 	beforeEach((): void => {
-		sut = new CreateToolUseCase(toolRepository);
+		sut = new CreateToolUseCase(cacheManager, toolRepository);
 	});
 
 	it('should throw when creating a tool with an already registered title', async (): Promise<void> => {
@@ -49,8 +53,7 @@ describe('CreateTool [use case]', (): void => {
 		const promise = sut.exec({
 			title,
 			link: 'https://github.com/typicode/json-server',
-			description:
-				'Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.',
+			description: 'json-server random description',
 			tags: ['api', 'json', 'schema', 'node', 'github', 'rest'],
 			userId: 'fake_user_id',
 		});
@@ -63,17 +66,17 @@ describe('CreateTool [use case]', (): void => {
 			title: 'json-server',
 			userId: 'fake_user_id',
 		});
-		expect(toolRepository.findByLink).toBeCalledTimes(0);
+		expect(toolRepository.findByLink).not.toHaveBeenCalled();
+		expect(cacheManager.set).not.toHaveBeenCalled();
 	});
 
 	it('should throw when creating a tool with an already registered link', async (): Promise<void> => {
 		const link = 'https://www.fastify.io/';
 
 		const promise = sut.exec({
-			title: 'fastify',
+			title: 'Fastify',
 			link,
-			description:
-				'Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.',
+			description: 'Fastify random description',
 			tags: ['web', 'framework', 'node', 'http2', 'https', 'localhost'],
 			userId: 'fake_user_id',
 		});
@@ -83,21 +86,21 @@ describe('CreateTool [use case]', (): void => {
 		);
 
 		expect(toolRepository.findByTitle).toHaveBeenNthCalledWith(2, {
-			title: 'fastify',
+			title: 'Fastify',
 			userId: 'fake_user_id',
 		});
 		expect(toolRepository.findByLink).toHaveBeenNthCalledWith(1, {
 			link: 'https://www.fastify.io/',
 			userId: 'fake_user_id',
 		});
+		expect(cacheManager.set).not.toHaveBeenCalled();
 	});
 
 	it('should create a tool', async (): Promise<void> => {
 		const { tool } = await sut.exec({
 			title: 'Notion',
 			link: 'https://notion.so',
-			description:
-				'All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ',
+			description: 'Notion random description',
 			tags: [
 				'organization',
 				'planning',
@@ -117,6 +120,11 @@ describe('CreateTool [use case]', (): void => {
 			link: 'https://notion.so',
 			userId: 'random_user_id',
 		});
+		expect(cacheManager.set).toHaveBeenNthCalledWith(
+			1,
+			`--vuttr/users:random_user_id/tools:${tool.id}`,
+			tool,
+		);
 
 		expect(tool).toBeDefined();
 		expect(tool.id).toBeDefined();
