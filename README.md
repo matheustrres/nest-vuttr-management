@@ -28,16 +28,17 @@ Install the application dependencies
 npm install
 ```    
 
-Set the environment variables correctly in the .env file
+Set these environment variables correctly in the .env file
 
 ```env
 NODE_ENV=
-
-PG_DATABASE=vuttr_db
-PG_PASSWORD=postgres
+PG_DATABASE=
+PG_PASSWORD=
 PG_PORT=5432
-PG_HOST=localhost
-PG_USERNAME=postgres
+PG_HOST=
+PG_USERNAME=
+JWT_SECRET_KEY=
+SESSION_SECRET_KEY=
 ```
 
 Initialize the database service with docker
@@ -67,4 +68,3 @@ To view the API documentation with OpenAPI Swagger, after you have started the s
 - User
     - [x]  Creation
     - [x]  Authentication
-    - [ ]  Updating
