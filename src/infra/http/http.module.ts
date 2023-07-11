@@ -16,6 +16,8 @@ import { ListToolsUseCase } from '@app/use-cases/tool/list-tools';
 import { CreateUserUseCase } from '@app/use-cases/user/create-user';
 import { LoginUserUseCase } from '@app/use-cases/user/login-user';
 
+import { envConfig } from '@config/env.config';
+
 import {
 	DeleteCacheKey,
 	GetCacheKey,
@@ -71,10 +73,10 @@ type LoginUserUseCaseRepository = FindUserByEmailRepository;
 			session: true,
 		}),
 		JwtModule.register({
-			secret: process.env.JWT_SECRET_KEY as string,
+			secret: envConfig.jwt.secret,
 			signOptions: {
 				algorithm: 'HS384',
-				expiresIn: '12h',
+				expiresIn: envConfig.jwt.expiresIn,
 			},
 			verifyOptions: {
 				algorithms: ['HS384'],

@@ -1,8 +1,10 @@
 import { CookieOptions } from 'express';
 
+import { envConfig } from './env.config';
+
 export const cookieConfig: CookieOptions = {
 	httpOnly: true,
 	signed: true,
 	sameSite: 'strict',
-	secure: (process.env.NODE_ENV as string) === 'production',
+	secure: envConfig.mode === 'production',
 };

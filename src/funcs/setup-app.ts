@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 
+import { envConfig } from '@config/env.config';
 import { sessionConfig } from '@config/session.config';
 
 import { GlobalExceptionFilter } from '@infra/http/exceptions/global-exception-filter';
@@ -34,7 +35,7 @@ export const setupApp = (app: INestApplication): INestApplication => {
 	app.use(passport.session());
 	app.use(passport.initialize());
 
-	app.use(cookieParser(process.env.SESSION_SECRET_KEY as string));
+	app.use(cookieParser(envConfig.session.secret));
 
 	/* ... */
 
