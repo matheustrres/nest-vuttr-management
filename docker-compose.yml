@@ -6,10 +6,10 @@ services:
     environment:
       - POSTGRES_DB=${PG_DATABASE}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_PORT=${PG_PORT}
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=${PG_USERNAME}
     ports:
-      - ${PG_PORT}:${PG_PORT}
+      - 5432:5432
     volumes:
       - ./db:/var/lib/postgresql/database
     networks:
