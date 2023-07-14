@@ -1,4 +1,4 @@
-import { BaseUseCase } from '@app/use-cases/base.use-case';
+import { BaseUseCase, GetCacheKeyInput } from '@app/use-cases/base.use-case';
 
 import { GetCacheKey, SetCacheKey } from '@data/contracts/cache';
 import { FindToolByIdRepository } from '@data/contracts/repositories/tool';
@@ -63,8 +63,3 @@ export class FindToolByIdUseCase
 		return `--vuttr/users:${input.userId}/tools:${input.toolId}`;
 	}
 }
-
-type GetCacheKeyInput = {
-	userId: string;
-	toolId: string;
-};

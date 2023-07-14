@@ -1,4 +1,4 @@
-import { BaseUseCase } from '@app/use-cases/base.use-case';
+import { BaseUseCase, GetCacheKeyInput } from '@app/use-cases/base.use-case';
 
 import { DeleteCacheKey, GetCacheKey } from '@data/contracts/cache';
 import {
@@ -60,8 +60,3 @@ export class DeleteToolUseCase
 		return `--vuttr/users:${input.userId}/tools:${input.toolId}`;
 	}
 }
-
-type GetCacheKeyInput = {
-	userId: string;
-	toolId: string;
-};
